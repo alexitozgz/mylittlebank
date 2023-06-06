@@ -1,7 +1,7 @@
 package com.iobuilders.mylittebank.interfaces.rest;
 
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
-import com.iobuilders.mylittebank.domain.model.User;
+import com.iobuilders.mylittebank.domain.model.BankUser;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.domain.services.UserService;
 import com.iobuilders.mylittebank.domain.services.WalletService;
@@ -26,10 +26,10 @@ public class WalletController {
 
     @PostMapping
     public ResponseEntity<Wallet> createWallet(@RequestBody WalletRequest walletRequest) {
-        User user = userService.getUser(walletRequest.getUserId());
+        BankUser bankUser = userService.getUser(walletRequest.getUserId());
         Wallet Wallet = null;
         try {
-            Wallet = walletService.createWallet(user);
+            Wallet = walletService.createWallet(bankUser);
         } catch (UserNotFoundException e) {
             e.printStackTrace();
         }

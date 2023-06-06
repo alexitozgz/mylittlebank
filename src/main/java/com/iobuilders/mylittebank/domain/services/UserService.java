@@ -1,9 +1,9 @@
 package com.iobuilders.mylittebank.domain.services;
 
-import com.iobuilders.mylittebank.domain.model.User;
+import com.iobuilders.mylittebank.domain.model.BankUser;
 
 public interface UserService {
-    User registerUser(String name, String phoneNumber, String email);
+    BankUser registerUser(String name, String phoneNumber, String email);
 
-    User getUser(long id);
+    BankUser getUser(long id);
 }

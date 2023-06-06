@@ -1,6 +1,6 @@
 package com.iobuilders.mylittebank.domain.services.impl;
 
-import com.iobuilders.mylittebank.domain.model.User;
+import com.iobuilders.mylittebank.domain.model.BankUser;
 import com.iobuilders.mylittebank.domain.services.UserService;
 import com.iobuilders.mylittebank.infrastructure.persistence.adapters.JpaUserRepository;
 import org.springframework.stereotype.Service;
@@ -14,16 +14,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(String name, String phoneNumber, String email) {
-        User user = new User();
-        user.setName(name);
-        user.setPhoneNumber(phoneNumber);
-        user.setEmail(email);
-        return userRepository.save(user);
+    public BankUser registerUser(String name, String phoneNumber, String email) {
+        BankUser bankUser = new BankUser();
+        bankUser.setName(name);
+        bankUser.setPhoneNumber(phoneNumber);
+        bankUser.setEmail(email);
+        return userRepository.save(bankUser);
     }
 
     @Override
-    public User getUser(long id) {
+    public BankUser getUser(long id) {
         return null;
     }
 }

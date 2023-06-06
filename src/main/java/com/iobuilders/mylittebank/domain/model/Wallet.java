@@ -10,26 +10,19 @@ import java.math.BigDecimal;
 public class Wallet {
 
     @Id
-    private long id;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private long walletId;
     private BigDecimal balance;
 
-    public long getId() {
-        return id;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private BankUser bankUser;
+
+    public long getWalletId() {
+        return walletId;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setWalletId(long walletId) {
+        this.walletId = walletId;
     }
 
     public BigDecimal getBalance() {
@@ -39,4 +32,13 @@ public class Wallet {
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
+
+    public BankUser getUser() {
+        return bankUser;
+    }
+
+    public void setUser(BankUser bankUser) {
+        this.bankUser = bankUser;
+    }
+
 }

@@ -2,22 +2,27 @@ package com.iobuilders.mylittebank.domain.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.Set;
 
 @Entity
-public class User {
+public class BankUser {
 
     @Id
-    private long id;
+    private long userId;
     private String name;
     private String phoneNumber;
     private String email;
 
-    public long getId() {
-        return id;
+    @OneToMany (mappedBy = "bankUser")
+    private Set<Wallet> wallet;
+
+    public long getUserId() {
+        return userId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -42,5 +47,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<Wallet> getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Set<Wallet> wallet) {
+        this.wallet = wallet;
     }
 }

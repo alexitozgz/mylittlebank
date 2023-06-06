@@ -2,8 +2,8 @@ package com.iobuilders.mylittebank.domain.services.impl;
 
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
 import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
+import com.iobuilders.mylittebank.domain.model.BankUser;
 import com.iobuilders.mylittebank.domain.model.Transaction;
-import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.domain.services.WalletService;
 import com.iobuilders.mylittebank.infrastructure.persistence.adapters.JpaTransactionRepository;
@@ -28,12 +28,12 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet createWallet(User userParam) throws UserNotFoundException {
-        User user = userRepository.findById(userParam.getId())
+    public Wallet createWallet(BankUser bankUserParam) throws UserNotFoundException {
+        BankUser bankUser = userRepository.findById(bankUserParam.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Wallet wallet = new Wallet();
-        wallet.setUser(user);
+        wallet.setUser(bankUser);
         wallet.setBalance(new BigDecimal(0));
 
         return walletRepository.save(wallet);

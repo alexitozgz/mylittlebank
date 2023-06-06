@@ -1,6 +1,6 @@
 package com.iobuilders.mylittebank.interfaces.rest;
 
-import com.iobuilders.mylittebank.domain.model.User;
+import com.iobuilders.mylittebank.domain.model.BankUser;
 import com.iobuilders.mylittebank.domain.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +18,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> registerUser(@RequestBody User userRequest) {
-        User user = userService.registerUser(userRequest.getName(), userRequest.getPhoneNumber(), userRequest.getEmail());
-        return ResponseEntity.ok(user);
+    public ResponseEntity<BankUser> registerUser(@RequestBody BankUser bankUserRequest) {
+        BankUser bankUser = userService.registerUser(bankUserRequest.getName(), bankUserRequest.getPhoneNumber(), bankUserRequest.getEmail());
+        return ResponseEntity.ok(bankUser);
     }
 }
