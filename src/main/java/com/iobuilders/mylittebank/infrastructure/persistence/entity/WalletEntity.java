@@ -1,15 +1,13 @@
 package com.iobuilders.mylittebank.infrastructure.persistence.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-public class Wallet {
+public class WalletEntity {
 
     @Id
+    @GeneratedValue
     private long walletId;
     private BigDecimal balance;
 

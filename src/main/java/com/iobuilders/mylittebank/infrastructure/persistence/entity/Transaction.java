@@ -14,7 +14,7 @@ public abstract class Transaction {
     private long id;
     @ManyToOne
     @JoinColumn(name = "wallet_id")
-    private Wallet wallet;
+    private WalletEntity walletEntity;
     private BigDecimal amount;
     private LocalDateTime transactionDateTime;
 
@@ -26,12 +26,12 @@ public abstract class Transaction {
         this.id = id;
     }
 
-    public Wallet getWallet() {
-        return wallet;
+    public WalletEntity getWallet() {
+        return walletEntity;
     }
 
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
+    public void setWallet(WalletEntity walletEntity) {
+        this.walletEntity = walletEntity;
     }
 
     public BigDecimal getAmount() {

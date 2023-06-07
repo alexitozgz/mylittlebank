@@ -7,19 +7,19 @@ import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.domain.service.WalletService;
 import com.iobuilders.mylittebank.infrastructure.persistence.repository.JpaTransactionRepository;
-import com.iobuilders.mylittebank.infrastructure.persistence.repository.JpaUserRepository;
-import com.iobuilders.mylittebank.infrastructure.persistence.repository.JpaWalletRepository;
+import com.iobuilders.mylittebank.infrastructure.persistence.repository.UserRepository;
+import com.iobuilders.mylittebank.infrastructure.persistence.repository.WalletRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 //@Service
 public class WalletServiceImpl implements WalletService {
-    private final JpaUserRepository userRepository;
-    private final JpaWalletRepository walletRepository;
+    private final UserRepository userRepository;
+    private final WalletRepository walletRepository;
     private final JpaTransactionRepository transactionRepository;
 
-    public WalletServiceImpl(JpaUserRepository userRepository, JpaWalletRepository walletRepository,
+    public WalletServiceImpl(UserRepository userRepository, WalletRepository walletRepository,
                              JpaTransactionRepository transactionRepository) {
         this.userRepository = userRepository;
         this.walletRepository = walletRepository;

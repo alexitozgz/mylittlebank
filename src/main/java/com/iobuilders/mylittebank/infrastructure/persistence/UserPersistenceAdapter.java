@@ -2,13 +2,10 @@ package com.iobuilders.mylittebank.infrastructure.persistence;
 
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.ports.outbound.RegisterUserPort;
-import com.iobuilders.mylittebank.domain.repository.UserRepository;
-import com.iobuilders.mylittebank.domain.service.UserService;
 import com.iobuilders.mylittebank.infrastructure.mapper.UserMapper;
 import com.iobuilders.mylittebank.infrastructure.persistence.entity.UserEntity;
-import org.springframework.stereotype.Service;
+import com.iobuilders.mylittebank.infrastructure.persistence.repository.UserRepository;
 
-@Service
 public class UserPersistenceAdapter implements RegisterUserPort {
 
     private final UserRepository userRepository;
@@ -23,7 +20,7 @@ public class UserPersistenceAdapter implements RegisterUserPort {
     @Override
     public void registerUser(User user) {
         UserEntity userEntity = userMapper.toUserEntity(user);
-        userRepository.saveUser(userEntity);
+        userRepository.save(userEntity);
     }
 
 //    @Override

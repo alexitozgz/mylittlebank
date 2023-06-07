@@ -1,15 +1,15 @@
 package com.iobuilders.mylittebank.domain.service.impl;
 
 import com.iobuilders.mylittebank.domain.service.DepositService;
-import com.iobuilders.mylittebank.infrastructure.persistence.repository.JpaWalletRepository;
+import com.iobuilders.mylittebank.infrastructure.persistence.repository.WalletRepository;
 
 import java.math.BigDecimal;
 
 //@Service
 public class DepositServiceImpl implements DepositService {
-    private final JpaWalletRepository walletRepository;
+    private final WalletRepository walletRepository;
 
-    public DepositServiceImpl(JpaWalletRepository walletRepository) {
+    public DepositServiceImpl(WalletRepository walletRepository) {
         this.walletRepository = walletRepository;
     }
 

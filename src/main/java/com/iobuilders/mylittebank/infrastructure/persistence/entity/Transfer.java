@@ -9,13 +9,13 @@ public class Transfer extends Transaction {
 
     @OneToOne
     @JoinColumn(name = "destination_wallet_id")
-    private Wallet destinationAccount;
+    private WalletEntity destinationAccount;
 
-    public Wallet getDestinationAccount() {
+    public WalletEntity getDestinationAccount() {
         return destinationAccount;
     }
 
-    public void setDestinationAccount(Wallet destinationAccount) {
+    public void setDestinationAccount(WalletEntity destinationAccount) {
         this.destinationAccount = destinationAccount;
     }
 }

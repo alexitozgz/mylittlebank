@@ -18,7 +18,7 @@ public class UserEntity {
 
     @OneToMany (mappedBy = "userEntity")
     private Set<
-            Wallet> wallet;
+            WalletEntity> walletEntity;
 
     public long getUserId() {
         return userId;
@@ -52,11 +52,11 @@ public class UserEntity {
         this.email = email;
     }
 
-    public Set<Wallet> getWallet() {
-        return wallet;
+    public Set<WalletEntity> getWallet() {
+        return walletEntity;
     }
 
-    public void setWallet(Set<Wallet> wallet) {
-        this.wallet = wallet;
+    public void setWallet(Set<WalletEntity> walletEntity) {
+        this.walletEntity = walletEntity;
     }
 }
