@@ -1,9 +1,11 @@
 package com.iobuilders.mylittebank.application.rest;
 
-import com.iobuilders.mylittebank.application.dto.DepositRequest;
-import com.iobuilders.mylittebank.application.dto.TransferRequest;
-import com.iobuilders.mylittebank.domain.model.Deposit;
-import com.iobuilders.mylittebank.domain.model.Transfer;
+import com.iobuilders.mylittebank.application.dto.mapper.MakeDepositRequestMapper;
+import com.iobuilders.mylittebank.application.dto.mapper.MakeTransferRequestMapper;
+import com.iobuilders.mylittebank.application.dto.request.MakeDepositRequest;
+import com.iobuilders.mylittebank.application.dto.request.MakeTransferRequest;
+import com.iobuilders.mylittebank.domain.exceptions.NotEnoughMoneyException;
+import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.ports.inbound.MakeDepositUseCase;
 import com.iobuilders.mylittebank.domain.ports.inbound.MakeTransferUseCase;
 import org.springframework.http.HttpStatus;
@@ -18,31 +20,37 @@ import org.springframework.web.bind.annotation.RestController;
 public class TransactionController {
     private final MakeDepositUseCase makeDepositUseCase;
     private final MakeTransferUseCase makeTransferUseCase;
+    private final MakeTransferRequestMapper makeTransferRequestMapper;
+    private final MakeDepositRequestMapper makeDepositRequestMapper;
 
 
-    public TransactionController(MakeDepositUseCase makeDepositUseCase, MakeTransferUseCase makeTransferUseCase) {
+    public TransactionController(MakeDepositUseCase makeDepositUseCase, MakeTransferUseCase makeTransferUseCase, MakeTransferRequestMapper makeTransferRequestMapper, MakeDepositRequestMapper makeDepositRequestMapper) {
         this.makeDepositUseCase = makeDepositUseCase;
         this.makeTransferUseCase = makeTransferUseCase;
+        this.makeTransferRequestMapper = makeTransferRequestMapper;
+        this.makeDepositRequestMapper = makeDepositRequestMapper;
     }
 
     @PostMapping("/deposit")
-    public ResponseEntity<String> makeDeposit(@RequestBody DepositRequest request) {
+    public ResponseEntity<String> makeDeposit(@RequestBody MakeDepositRequest makeDepositRequest) {
         try {
-            Deposit deposit = new Deposit(request.getWalletId(), request.getAmount());
-            makeDepositUseCase.makeDeposit(deposit);
+            Transaction transaction = makeDepositRequestMapper.toTransaction(makeDepositRequest);
+            makeDepositUseCase.makeDeposit(transaction);
             return ResponseEntity.ok("Depósito creado correctamente");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear depósito");
         }
     }
 
     @PostMapping("/transfer")
-    public ResponseEntity<String> makeTransfer(@RequestBody TransferRequest request) {
+    public ResponseEntity<String> makeTransfer(@RequestBody MakeTransferRequest makeTransferRequest) throws NotEnoughMoneyException {
         try {
-            Transfer transfer = new Transfer(request.getWalletId(), request.getDestinationWalletId(), request.getAmount());
-            makeTransferUseCase.makeTransfer(transfer);
+            Transaction transaction = makeTransferRequestMapper.toTransaction(makeTransferRequest);
+            makeTransferUseCase.makeTransfer(transaction);
             return ResponseEntity.ok("Transferencia creada correctamente");
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear transferencia");
         }
     }

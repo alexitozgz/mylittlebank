@@ -2,7 +2,6 @@ package com.iobuilders.mylittebank.application.rest;
 
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.ports.inbound.RegisterUserUseCase;
-import com.iobuilders.mylittebank.domain.service.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

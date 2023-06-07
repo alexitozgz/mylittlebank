@@ -3,28 +3,45 @@ package com.iobuilders.mylittebank.domain.model;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public abstract class Transaction {
+public class Transaction {
 
-    private long id;
-    private Wallet wallet;
+    private long transactionId;
+    private Wallet destinationWallet;
+    private Wallet originWallet;
+    private String transactionType;
     private BigDecimal amount;
     private LocalDateTime transactionDateTime;
 
-
-    public long getId() {
-        return id;
+    public long getTransactionId() {
+        return transactionId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setTransactionId(long transactionId) {
+        this.transactionId = transactionId;
     }
 
-    public Wallet getWallet() {
-        return wallet;
+    public Wallet getDestinationWallet() {
+        return destinationWallet;
     }
 
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
+    public void setDestinationWallet(Wallet destinationWallet) {
+        this.destinationWallet = destinationWallet;
+    }
+
+    public Wallet getOriginWallet() {
+        return originWallet;
+    }
+
+    public void setOriginWallet(Wallet originWallet) {
+        this.originWallet = originWallet;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
     }
 
     public BigDecimal getAmount() {

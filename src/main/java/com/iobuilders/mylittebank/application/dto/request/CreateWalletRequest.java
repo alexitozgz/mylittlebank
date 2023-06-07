@@ -1,6 +1,6 @@
-package com.iobuilders.mylittebank.application.dto;
+package com.iobuilders.mylittebank.application.dto.request;
 
-public class WalletRequest {
+public class CreateWalletRequest {
     private long userId;
 
     public long getUserId() {

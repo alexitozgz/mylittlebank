@@ -6,7 +6,7 @@ import com.iobuilders.mylittebank.domain.ports.outbound.RegisterUserPort;
 
 public class RegisterUserService implements RegisterUserUseCase {
 
-    private RegisterUserPort registerUserPort;
+    private final RegisterUserPort registerUserPort;
 
     public RegisterUserService(RegisterUserPort registerUserPort) {
         this.registerUserPort = registerUserPort;

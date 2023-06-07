@@ -1,22 +1,23 @@
 package com.iobuilders.mylittebank.domain.service;
 
-import com.iobuilders.mylittebank.domain.model.User;
+import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
 import com.iobuilders.mylittebank.domain.ports.inbound.CreateWalletUseCase;
-import com.iobuilders.mylittebank.domain.ports.inbound.RegisterUserUseCase;
 import com.iobuilders.mylittebank.domain.ports.outbound.CreateWalletPort;
-import com.iobuilders.mylittebank.domain.ports.outbound.RegisterUserPort;
+import com.iobuilders.mylittebank.domain.ports.outbound.ObtainUserPort;
 
 public class CreateWalletService implements CreateWalletUseCase {
 
-    private CreateWalletPort createWalletPort;
+    private final CreateWalletPort createWalletPort;
+    private final ObtainUserPort obtainUserPort;
 
-    public CreateWalletService(CreateWalletPort createWalletPort) {
+    public CreateWalletService(CreateWalletPort createWalletPort, ObtainUserPort obtainUserPort) {
         this.createWalletPort = createWalletPort;
+        this.obtainUserPort = obtainUserPort;
     }
 
     @Override
-    public void createWallet(Long userId) {
-        //TODO check if the user exists
+    public void createWallet(Long userId) throws UserNotFoundException {
+        obtainUserPort.obtainUser(userId);
         createWalletPort.createWallet(userId);
     }
 }

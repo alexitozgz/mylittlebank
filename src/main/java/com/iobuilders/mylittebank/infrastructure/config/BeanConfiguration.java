@@ -1,18 +1,25 @@
 package com.iobuilders.mylittebank.infrastructure.config;
 
+import com.iobuilders.mylittebank.application.dto.mapper.BalanceTransactionsByWalletResponseMapper;
+import com.iobuilders.mylittebank.application.dto.mapper.MakeDepositRequestMapper;
+import com.iobuilders.mylittebank.application.dto.mapper.MakeTransferRequestMapper;
 import com.iobuilders.mylittebank.domain.ports.outbound.CreateWalletPort;
 import com.iobuilders.mylittebank.domain.ports.outbound.MakeDepositPort;
 import com.iobuilders.mylittebank.domain.ports.outbound.MakeTransferPort;
+import com.iobuilders.mylittebank.domain.ports.outbound.ObtainTransactionsByWalletPort;
+import com.iobuilders.mylittebank.domain.ports.outbound.ObtainUserPort;
+import com.iobuilders.mylittebank.domain.ports.outbound.ObtainWalletPort;
 import com.iobuilders.mylittebank.domain.ports.outbound.RegisterUserPort;
+import com.iobuilders.mylittebank.domain.ports.outbound.UpdateWalletPort;
 import com.iobuilders.mylittebank.domain.service.CreateWalletService;
 import com.iobuilders.mylittebank.domain.service.MakeDepositService;
 import com.iobuilders.mylittebank.domain.service.MakeTransferService;
+import com.iobuilders.mylittebank.domain.service.ObtainBalanceTransactionsByWalletUseCaseService;
 import com.iobuilders.mylittebank.domain.service.RegisterUserService;
 import com.iobuilders.mylittebank.infrastructure.mapper.TransactionMapper;
 import com.iobuilders.mylittebank.infrastructure.mapper.UserMapper;
 import com.iobuilders.mylittebank.infrastructure.mapper.WalletMapper;
-import com.iobuilders.mylittebank.infrastructure.persistence.adapters.DepositPersistenceAdapter;
-import com.iobuilders.mylittebank.infrastructure.persistence.adapters.TransferPersistenceAdapter;
+import com.iobuilders.mylittebank.infrastructure.persistence.adapters.TransactionPersistenceAdapter;
 import com.iobuilders.mylittebank.infrastructure.persistence.adapters.UserPersistenceAdapter;
 import com.iobuilders.mylittebank.infrastructure.persistence.adapters.WalletPersistenceAdapter;
 import com.iobuilders.mylittebank.infrastructure.persistence.repository.TransactionRepository;
@@ -46,6 +53,23 @@ public class BeanConfiguration {
     }
 
     @Bean
+    public BalanceTransactionsByWalletResponseMapper balanceTransactionsByWalletResponseMapper(){
+        return new BalanceTransactionsByWalletResponseMapper();
+    }
+
+
+    @Bean
+    public MakeTransferRequestMapper makeTransferRequestMapper(){
+        return new MakeTransferRequestMapper();
+    }
+
+    @Bean
+    public MakeDepositRequestMapper makeDepositRequestMapper(){
+        return new MakeDepositRequestMapper();
+    }
+
+
+    @Bean
     public UserPersistenceAdapter userPersistenceAdapter(UserRepository userRepository, UserMapper userMapper) {
         return new UserPersistenceAdapter(userRepository, userMapper);
     }
@@ -56,15 +80,9 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public DepositPersistenceAdapter depositPersistenceAdapter(TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
-        return new DepositPersistenceAdapter(transactionRepository, transactionMapper);
+    public TransactionPersistenceAdapter depositPersistenceAdapter(TransactionRepository transactionRepository, TransactionMapper transactionMapper, WalletMapper walletMapper) {
+        return new TransactionPersistenceAdapter(transactionRepository, transactionMapper, walletMapper);
     }
-
-    @Bean
-    public TransferPersistenceAdapter transferPersistenceAdapter(TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
-        return new TransferPersistenceAdapter(transactionRepository, transactionMapper);
-    }
-
 
     @Bean
     public RegisterUserService registerUserService(RegisterUserPort registerUserPort) {
@@ -72,17 +90,23 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public CreateWalletService createWalletService(CreateWalletPort createWalletPort) {
-        return new CreateWalletService(createWalletPort);
+    public CreateWalletService createWalletService(CreateWalletPort createWalletPort, ObtainUserPort obtainUserPort) {
+        return new CreateWalletService(createWalletPort, obtainUserPort);
     }
 
     @Bean
-    public MakeDepositService makeDepositService(MakeDepositPort makeDepositPort) {
-        return new MakeDepositService(makeDepositPort);
+    public MakeDepositService makeDepositService(MakeDepositPort makeDepositPort, ObtainWalletPort obtainWalletPort, UpdateWalletPort updateWalletPort) {
+        return new MakeDepositService(makeDepositPort, obtainWalletPort, updateWalletPort);
     }
 
     @Bean
-    public MakeTransferService makeTransferService(MakeTransferPort makeTransferPort) {
-        return new MakeTransferService(makeTransferPort);
+    public MakeTransferService makeTransferService(MakeTransferPort makeTransferPort, ObtainWalletPort obtainWalletPort, UpdateWalletPort updateWalletPort) {
+        return new MakeTransferService(makeTransferPort, obtainWalletPort, updateWalletPort);
     }
+
+    @Bean
+    public ObtainBalanceTransactionsByWalletUseCaseService obtainBalanceTransactionsByWalletUseCaseService(ObtainTransactionsByWalletPort obtainTransactionsByWalletPort, ObtainWalletPort obtainWalletPort){
+        return new ObtainBalanceTransactionsByWalletUseCaseService(obtainTransactionsByWalletPort, obtainWalletPort);
+    }
+
 }

@@ -5,19 +5,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "TRANSACTION")
 public class TransactionEntity {
 
     @Id
     @GeneratedValue
-    private long id;
+    private long transactionId;
 
     @ManyToOne
-    @JoinColumn(name = "wallet_id")
-    private WalletEntity wallet;
+    @JoinColumn(name = "origin_wallet_id")
+    private WalletEntity originWallet;
 
     @ManyToOne
     @JoinColumn(name = "destination_wallet_id")
@@ -27,29 +29,30 @@ public class TransactionEntity {
 
     private LocalDateTime transactionDateTime;
 
+    private String transactionType;
 
-    public long getId() {
-        return id;
+    public long getTransactionId() {
+        return transactionId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setTransactionId(long id) {
+        this.transactionId = id;
     }
 
-    public WalletEntity getWallet() {
-        return wallet;
+    public WalletEntity getOriginWallet() {
+        return originWallet;
     }
 
-    public void setWallet(WalletEntity walletEntity) {
-        this.wallet = walletEntity;
+    public void setOriginWallet(WalletEntity originWallet) {
+        this.originWallet = originWallet;
     }
 
     public WalletEntity getDestinationWallet() {
         return destinationWallet;
     }
 
-    public void setDestinationWallet(WalletEntity destinationAccount) {
-        this.destinationWallet = destinationAccount;
+    public void setDestinationWallet(WalletEntity destinationWallet) {
+        this.destinationWallet = destinationWallet;
     }
 
     public BigDecimal getAmount() {
@@ -66,5 +69,13 @@ public class TransactionEntity {
 
     public void setTransactionDateTime(LocalDateTime transactionDateTime) {
         this.transactionDateTime = transactionDateTime;
+    }
+
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
     }
 }

@@ -1,6 +1,7 @@
 package com.iobuilders.mylittebank.domain.model;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Wallet {
 
@@ -8,6 +9,8 @@ public class Wallet {
     private BigDecimal balance;
 
     private User user;
+
+    private List<Transaction> transactionList;
 
     public long getWalletId() {
         return walletId;
@@ -33,4 +36,11 @@ public class Wallet {
         this.user = user;
     }
 
+    public List<Transaction> getTransactionList() {
+        return transactionList;
+    }
+
+    public void setTransactionList(List<Transaction> transactionList) {
+        this.transactionList = transactionList;
+    }
 }
