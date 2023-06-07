@@ -1,21 +1,13 @@
 package com.iobuilders.mylittebank.domain.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.math.BigDecimal;
 
-@Entity
 public class Wallet {
 
-    @Id
     private long walletId;
     private BigDecimal balance;
 
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    private BankUser bankUser;
+    private User user;
 
     public long getWalletId() {
         return walletId;
@@ -33,12 +25,12 @@ public class Wallet {
         this.balance = balance;
     }
 
-    public BankUser getUser() {
-        return bankUser;
+    public User getUser() {
+        return user;
     }
 
-    public void setUser(BankUser bankUser) {
-        this.bankUser = bankUser;
+    public void setUser(User user) {
+        this.user = user;
     }
 
 }

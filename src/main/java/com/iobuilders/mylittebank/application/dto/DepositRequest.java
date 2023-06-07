@@ -1,4 +1,4 @@
-package com.iobuilders.mylittebank.interfaces.rest.dto;
+package com.iobuilders.mylittebank.application.dto;
 
 import java.math.BigDecimal;
 

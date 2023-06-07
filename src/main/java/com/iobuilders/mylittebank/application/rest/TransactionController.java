@@ -1,17 +1,15 @@
-package com.iobuilders.mylittebank.interfaces.rest;
+package com.iobuilders.mylittebank.application.rest;
 
-import com.iobuilders.mylittebank.domain.services.DepositService;
-import com.iobuilders.mylittebank.domain.services.TransferService;
-import com.iobuilders.mylittebank.interfaces.rest.dto.DepositRequest;
-import com.iobuilders.mylittebank.interfaces.rest.dto.TransferRequest;
+import com.iobuilders.mylittebank.application.dto.DepositRequest;
+import com.iobuilders.mylittebank.domain.service.DepositService;
+import com.iobuilders.mylittebank.domain.service.TransferService;
+import com.iobuilders.mylittebank.application.dto.TransferRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/transactions")
+//@RestController
+//@RequestMapping("/transactions")
 public class TransactionController {
     private final DepositService depositService;
     private final TransferService transferService;

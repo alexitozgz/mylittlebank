@@ -1,20 +1,19 @@
-package com.iobuilders.mylittebank.domain.services.impl;
+package com.iobuilders.mylittebank.domain.service.impl;
 
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
 import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
-import com.iobuilders.mylittebank.domain.model.BankUser;
+import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.Wallet;
-import com.iobuilders.mylittebank.domain.services.WalletService;
-import com.iobuilders.mylittebank.infrastructure.persistence.adapters.JpaTransactionRepository;
-import com.iobuilders.mylittebank.infrastructure.persistence.adapters.JpaUserRepository;
-import com.iobuilders.mylittebank.infrastructure.persistence.adapters.JpaWalletRepository;
-import org.springframework.stereotype.Service;
+import com.iobuilders.mylittebank.domain.service.WalletService;
+import com.iobuilders.mylittebank.infrastructure.persistence.repository.JpaTransactionRepository;
+import com.iobuilders.mylittebank.infrastructure.persistence.repository.JpaUserRepository;
+import com.iobuilders.mylittebank.infrastructure.persistence.repository.JpaWalletRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-@Service
+//@Service
 public class WalletServiceImpl implements WalletService {
     private final JpaUserRepository userRepository;
     private final JpaWalletRepository walletRepository;
@@ -28,15 +27,16 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Wallet createWallet(BankUser bankUserParam) throws UserNotFoundException {
-        BankUser bankUser = userRepository.findById(bankUserParam.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        Wallet wallet = new Wallet();
-        wallet.setUser(bankUser);
-        wallet.setBalance(new BigDecimal(0));
-
-        return walletRepository.save(wallet);
+    public Wallet createWallet(User userParam) throws UserNotFoundException {
+//        User user = userRepository.findById(userParam.getUserId())
+//                .orElseThrow(() -> new UserNotFoundException("User not found"));
+//
+//        Wallet wallet = new Wallet();
+//        wallet.setUser(user);
+//        wallet.setBalance(new BigDecimal(0));
+//
+//        return walletRepository.save(wallet);
+        return null;
     }
 
 /*
@@ -58,18 +58,22 @@ public class WalletServiceImpl implements WalletService {
 
     @Override
     public BigDecimal getWalletBalance(long walletId) throws WalletNotFoundException {
+/*
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> new WalletNotFoundException("Wallet not found"));
 
         return wallet.getBalance();
+*/return null;
     }
 
     @Override
     public List<Transaction> getAccountTransactions(long accountId) throws WalletNotFoundException {
+/*
         Wallet wallet = walletRepository.findById(accountId)
                 .orElseThrow(() -> new WalletNotFoundException("Wallet not found"));
 
         return transactionRepository.findByWallet(wallet);
+*/return null;
     }
 
 /*

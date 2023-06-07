@@ -1,20 +1,14 @@
 package com.iobuilders.mylittebank.domain.model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import java.util.Set;
 
-@Entity
-public class BankUser {
+public class User {
 
-    @Id
     private long userId;
     private String name;
     private String phoneNumber;
     private String email;
 
-    @OneToMany (mappedBy = "bankUser")
     private Set<Wallet> wallet;
 
     public long getUserId() {

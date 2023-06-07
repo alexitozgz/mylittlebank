@@ -1,14 +1,11 @@
-package com.iobuilders.mylittebank.domain.services.impl;
+package com.iobuilders.mylittebank.domain.service.impl;
 
-import com.iobuilders.mylittebank.domain.model.Wallet;
-import com.iobuilders.mylittebank.domain.services.DepositService;
-import com.iobuilders.mylittebank.infrastructure.persistence.adapters.JpaWalletRepository;
-import org.springframework.stereotype.Service;
+import com.iobuilders.mylittebank.domain.service.DepositService;
+import com.iobuilders.mylittebank.infrastructure.persistence.repository.JpaWalletRepository;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
-@Service
+//@Service
 public class DepositServiceImpl implements DepositService {
     private final JpaWalletRepository walletRepository;
 
@@ -18,16 +15,14 @@ public class DepositServiceImpl implements DepositService {
 
     @Override
     public void makeDeposit(long accountId, BigDecimal amount) {
+/*
         Optional<Wallet> wallet = walletRepository.findById(accountId);
         if (wallet.isPresent()) {
-/*
             wallet.deposit(amount);
             walletRepository.save(wallet);
-*/
         } else {
-/*
             throw new AccountNotFoundException("Account not found");
-*/
         }
+*/
     }
 }

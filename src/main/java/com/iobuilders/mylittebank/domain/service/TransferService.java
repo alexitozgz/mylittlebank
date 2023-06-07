@@ -1,4 +1,4 @@
-package com.iobuilders.mylittebank.domain.services;
+package com.iobuilders.mylittebank.domain.service;
 
 import java.math.BigDecimal;
 

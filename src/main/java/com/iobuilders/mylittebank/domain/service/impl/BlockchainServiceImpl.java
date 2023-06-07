@@ -1,12 +1,11 @@
-package com.iobuilders.mylittebank.domain.services.impl;
+package com.iobuilders.mylittebank.domain.service.impl;
 
-import com.iobuilders.mylittebank.domain.services.BlockchainService;
+import com.iobuilders.mylittebank.domain.service.BlockchainService;
 import org.springframework.stereotype.Service;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.tuples.generated.Tuple2;
-import org.web3j.tx.gas.DefaultGasProvider;
 //import your.package.path.generated.SampleContract; // Reemplaza con la ruta correcta del contrato generado
 
 @Service

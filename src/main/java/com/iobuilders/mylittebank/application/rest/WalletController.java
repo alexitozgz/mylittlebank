@@ -1,19 +1,17 @@
-package com.iobuilders.mylittebank.interfaces.rest;
+package com.iobuilders.mylittebank.application.rest;
 
+import com.iobuilders.mylittebank.application.dto.WalletRequest;
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
-import com.iobuilders.mylittebank.domain.model.BankUser;
+import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
-import com.iobuilders.mylittebank.domain.services.UserService;
-import com.iobuilders.mylittebank.domain.services.WalletService;
-import com.iobuilders.mylittebank.interfaces.rest.dto.WalletRequest;
+import com.iobuilders.mylittebank.domain.service.UserService;
+import com.iobuilders.mylittebank.domain.service.WalletService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping("/Wallets")
+//@RestController
+//@RequestMapping("/Wallets")
 public class WalletController {
     private final WalletService walletService;
     private final UserService userService;
@@ -26,10 +24,10 @@ public class WalletController {
 
     @PostMapping
     public ResponseEntity<Wallet> createWallet(@RequestBody WalletRequest walletRequest) {
-        BankUser bankUser = userService.getUser(walletRequest.getUserId());
+        User user = userService.getUser(walletRequest.getUserId());
         Wallet Wallet = null;
         try {
-            Wallet = walletService.createWallet(bankUser);
+            Wallet = walletService.createWallet(user);
         } catch (UserNotFoundException e) {
             e.printStackTrace();
         }

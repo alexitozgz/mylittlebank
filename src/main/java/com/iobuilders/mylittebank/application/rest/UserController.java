@@ -1,7 +1,8 @@
-package com.iobuilders.mylittebank.interfaces.rest;
+package com.iobuilders.mylittebank.application.rest;
 
-import com.iobuilders.mylittebank.domain.model.BankUser;
-import com.iobuilders.mylittebank.domain.services.UserService;
+import com.iobuilders.mylittebank.domain.model.User;
+import com.iobuilders.mylittebank.domain.ports.inbound.RegisterUserUseCase;
+import com.iobuilders.mylittebank.domain.service.UserService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
+    private final RegisterUserUseCase registerUserUseCase;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(RegisterUserUseCase registerUserUseCase) {
+        this.registerUserUseCase = registerUserUseCase;
     }
 
-    @PostMapping("/registerUser")
-    public ResponseEntity<String> registerUser(@NotNull @RequestBody BankUser bankUserRequest) {
+    @PostMapping
+    public ResponseEntity<String> registerUser(@NotNull @RequestBody User userRequest) {
         try {
-            userService.registerUser(bankUserRequest.getName(), bankUserRequest.getPhoneNumber(), bankUserRequest.getEmail());
+            registerUserUseCase.registerUser(userRequest);
             return ResponseEntity.ok("Usuario registrado correctamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al registrar usuario");

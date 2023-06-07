@@ -1,12 +1,11 @@
-package com.iobuilders.mylittebank.domain.services.impl;
+package com.iobuilders.mylittebank.domain.service.impl;
 
-import com.iobuilders.mylittebank.domain.services.TransferService;
-import com.iobuilders.mylittebank.infrastructure.persistence.adapters.JpaWalletRepository;
-import org.springframework.stereotype.Service;
+import com.iobuilders.mylittebank.domain.service.TransferService;
+import com.iobuilders.mylittebank.infrastructure.persistence.repository.JpaWalletRepository;
 
 import java.math.BigDecimal;
 
-@Service
+//@Service
 public class TransferServiceImpl implements TransferService {
     private final JpaWalletRepository walletRepository;
 
