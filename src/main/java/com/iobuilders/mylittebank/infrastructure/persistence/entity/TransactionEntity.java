@@ -1,6 +1,7 @@
 package com.iobuilders.mylittebank.infrastructure.persistence.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -8,15 +9,24 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-public abstract class Transaction {
+public class TransactionEntity {
 
     @Id
+    @GeneratedValue
     private long id;
+
     @ManyToOne
     @JoinColumn(name = "wallet_id")
-    private WalletEntity walletEntity;
+    private WalletEntity wallet;
+
+    @ManyToOne
+    @JoinColumn(name = "destination_wallet_id")
+    private WalletEntity destinationWallet;
+
     private BigDecimal amount;
+
     private LocalDateTime transactionDateTime;
+
 
     public long getId() {
         return id;
@@ -27,11 +37,19 @@ public abstract class Transaction {
     }
 
     public WalletEntity getWallet() {
-        return walletEntity;
+        return wallet;
     }
 
     public void setWallet(WalletEntity walletEntity) {
-        this.walletEntity = walletEntity;
+        this.wallet = walletEntity;
+    }
+
+    public WalletEntity getDestinationWallet() {
+        return destinationWallet;
+    }
+
+    public void setDestinationWallet(WalletEntity destinationAccount) {
+        this.destinationWallet = destinationAccount;
     }
 
     public BigDecimal getAmount() {

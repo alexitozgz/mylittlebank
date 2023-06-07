@@ -3,24 +3,24 @@ package com.iobuilders.mylittebank.application.dto;
 import java.math.BigDecimal;
 
 public class TransferRequest {
-    private long sourceAccountId;
-    private long destinationAccountId;
+    private long walletId;
+    private long destinationWalletId;
     private BigDecimal amount;
 
-    public long getSourceAccountId() {
-        return sourceAccountId;
+    public long getWalletId() {
+        return walletId;
     }
 
-    public void setSourceAccountId(long sourceAccountId) {
-        this.sourceAccountId = sourceAccountId;
+    public void setWalletId(long walletId) {
+        this.walletId = walletId;
     }
 
-    public long getDestinationAccountId() {
-        return destinationAccountId;
+    public long getDestinationWalletId() {
+        return destinationWalletId;
     }
 
-    public void setDestinationAccountId(long destinationAccountId) {
-        this.destinationAccountId = destinationAccountId;
+    public void setDestinationWalletId(long destinationWalletId) {
+        this.destinationWalletId = destinationWalletId;
     }
 
     public BigDecimal getAmount() {

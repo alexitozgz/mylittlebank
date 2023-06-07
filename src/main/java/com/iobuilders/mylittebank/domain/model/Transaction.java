@@ -10,6 +10,7 @@ public abstract class Transaction {
     private BigDecimal amount;
     private LocalDateTime transactionDateTime;
 
+
     public long getId() {
         return id;
     }

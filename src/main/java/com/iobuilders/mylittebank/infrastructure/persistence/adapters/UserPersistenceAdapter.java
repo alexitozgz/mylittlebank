@@ -1,4 +1,4 @@
-package com.iobuilders.mylittebank.infrastructure.persistence;
+package com.iobuilders.mylittebank.infrastructure.persistence.adapters;
 
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.ports.outbound.RegisterUserPort;

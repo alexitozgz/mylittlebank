@@ -3,15 +3,15 @@ package com.iobuilders.mylittebank.application.dto;
 import java.math.BigDecimal;
 
 public class DepositRequest {
-    private long accountId;
+    private long walletId;
     private BigDecimal amount;
 
-    public long getAccountId() {
-        return accountId;
+    public long getWalletId() {
+        return walletId;
     }
 
-    public void setAccountId(long accountId) {
-        this.accountId = accountId;
+    public void setWalletId(long walletId) {
+        this.walletId = walletId;
     }
 
     public BigDecimal getAmount() {
