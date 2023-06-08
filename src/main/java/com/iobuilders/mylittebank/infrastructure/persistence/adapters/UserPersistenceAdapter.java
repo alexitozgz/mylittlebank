@@ -20,18 +20,14 @@ public class UserPersistenceAdapter implements RegisterUserPort, ObtainUserPort 
     }
 
     @Override
-    public void registerUser(User user) {
+    public Long registerUser(User user) {
         UserEntity userEntity = userMapper.toUserEntity(user);
-        userRepository.save(userEntity);
+        return userRepository.save(userEntity).getUserId();
     }
 
     @Override
-    public void obtainUser(Long userId) throws UserNotFoundException {
-        userRepository.findById(userId).orElseThrow(() ->new UserNotFoundException(userId));
+    public void existsUser(Long userId) throws UserNotFoundException {
+        userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }
 
-//    @Override
-//    public User getUser(long id) {
-//        return null;
-//    }
 }

@@ -1,15 +1,19 @@
 package com.iobuilders.mylittebank.domain.service;
 
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateTransfer;
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateUser;
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateWallet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.iobuilders.mylittebank.domain.exceptions.NotEnoughMoneyException;
-import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
 import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
@@ -50,164 +54,68 @@ class MakeTransferServiceTest {
     @MockBean
     private UpdateWalletPort updateWalletPort;
 
-    /**
-     * Method under test: {@link MakeTransferService#MakeTransferService(MakeTransferPort, ObtainWalletPort, UpdateWalletPort)}
-     */
     @Test
-    void testConstructor() {
-        // TODO: Complete this test.
-        //   Reason: R002 Missing observers.
-        //   Diffblue Cover was unable to create an assertion.
-        //   Add getters for the following fields or make them package-private:
-        //     MakeTransferService.makeTransferPort
-        //     MakeTransferService.obtainWalletPort
-        //     MakeTransferService.updateWalletPort
+    void makeTransfer_ok() throws WalletNotFoundException, NotEnoughMoneyException {
+        User user = generateUser();
+        Wallet destinationWallet = generateWallet(user);
+        Wallet originWallet = generateWallet(user);
+        originWallet.setWalletId(2);
+        originWallet.setBalance(BigDecimal.valueOf(100));
 
-        new MakeTransferService(mock(MakeTransferPort.class), mock(ObtainWalletPort.class), mock(UpdateWalletPort.class));
+        Transaction transaction = generateTransfer(destinationWallet, originWallet, BigDecimal.TEN);
+
+        when(obtainWalletPort.obtainWallet(originWallet.getWalletId())).thenReturn(originWallet);
+        when(obtainWalletPort.obtainWallet(destinationWallet.getWalletId())).thenReturn(destinationWallet);
+        when(makeTransferPort.createTransfer(transaction)).thenReturn(33L);
+        doNothing().when(updateWalletPort).updateWallet(Mockito.<Wallet>any());
+
+        assertEquals(BigDecimal.ZERO, destinationWallet.getBalance());
+        assertEquals(33L, makeTransferService.makeTransfer(transaction));
+        assertEquals(BigDecimal.TEN, destinationWallet.getBalance());
+    }
+
+    @Test
+    void makeTransfer_verify_port_calls() throws WalletNotFoundException, NotEnoughMoneyException {
+        User user = generateUser();
+        Wallet destinationWallet = generateWallet(user);
+        Wallet originWallet = generateWallet(user);
+        originWallet.setWalletId(2);
+        originWallet.setBalance(BigDecimal.valueOf(100));
+
+        Transaction transaction = generateTransfer(destinationWallet, originWallet, BigDecimal.TEN);
+
+        when(obtainWalletPort.obtainWallet(originWallet.getWalletId())).thenReturn(originWallet);
+        when(obtainWalletPort.obtainWallet(destinationWallet.getWalletId())).thenReturn(destinationWallet);
+        when(makeTransferPort.createTransfer(transaction)).thenReturn(33L);
+        doNothing().when(updateWalletPort).updateWallet(Mockito.<Wallet>any());
+
+        makeTransferService.makeTransfer(transaction);
+
+        verify(makeTransferPort).createTransfer(transaction);
+        verify(obtainWalletPort).obtainWallet(transaction.getDestinationWallet().getWalletId());
+        verify(updateWalletPort).updateWallet(transaction.getDestinationWallet());
+    }
+
+    @Test
+    void makeTransfer_notEnoughMoneyException() throws WalletNotFoundException, NotEnoughMoneyException {
+        User user = generateUser();
+        Wallet destinationWallet = generateWallet(user);
+        Wallet originWallet = generateWallet(user);
+        originWallet.setBalance(BigDecimal.valueOf(100));
+
+        Transaction transaction = generateTransfer(destinationWallet, originWallet, BigDecimal.TEN);
+
+        when(obtainWalletPort.obtainWallet(destinationWallet.getWalletId())).thenReturn(destinationWallet);
+
+        assertThrows(NotEnoughMoneyException.class, () -> makeTransferService.makeTransfer(transaction));
 
     }
 
-    /**
-     * Method under test: {@link MakeTransferUseCase#makeTransfer(Transaction)}
-     */
     @Test
-    void testMakeTransfer() throws NotEnoughMoneyException, WalletNotFoundException {
-        doNothing().when(makeTransferPort).createTransfer(Mockito.<Transaction>any());
-
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
-
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.valueOf(1L));
-        wallet.setTransactionList(new ArrayList<>());
-        wallet.setUser(user);
-        wallet.setWalletId(1L);
-        when(obtainWalletPort.obtainWalletPort(Mockito.<Long>any())).thenReturn(wallet);
-        doNothing().when(updateWalletPort).updateWallet(Mockito.<Wallet>any());
-
-        User user2 = new User();
-        user2.setEmail("jane.doe@example.org");
-        user2.setName("Name");
-        user2.setPhoneNumber("6625550144");
-        user2.setUserId(1L);
-        user2.setWallet(new HashSet<>());
-
-        Wallet destinationWallet = new Wallet();
-        destinationWallet.setBalance(BigDecimal.valueOf(1L));
-        destinationWallet.setTransactionList(new ArrayList<>());
-        destinationWallet.setUser(user2);
-        destinationWallet.setWalletId(1L);
-
-        User user3 = new User();
-        user3.setEmail("jane.doe@example.org");
-        user3.setName("Name");
-        user3.setPhoneNumber("6625550144");
-        user3.setUserId(1L);
-        user3.setWallet(new HashSet<>());
-
-        Wallet originWallet = new Wallet();
-        originWallet.setBalance(BigDecimal.valueOf(1L));
-        originWallet.setTransactionList(new ArrayList<>());
-        originWallet.setUser(user3);
-        originWallet.setWalletId(1L);
-
-        Transaction transaction = new Transaction();
-        transaction.setAmount(BigDecimal.valueOf(1L));
-        transaction.setDestinationWallet(destinationWallet);
-        transaction.setOriginWallet(originWallet);
-        transaction.setTransactionDateTime(LocalDate.of(1970, 1, 1).atStartOfDay());
-        transaction.setTransactionId(1L);
-        transaction.setTransactionType("Transaction Type");
-        try {
-            makeTransferService.makeTransfer(transaction);
-        } catch (com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        verify(makeTransferPort).createTransfer(Mockito.<Transaction>any());
-        verify(obtainWalletPort, atLeast(1)).obtainWalletPort(Mockito.<Long>any());
-        verify(updateWalletPort, atLeast(1)).updateWallet(Mockito.<Wallet>any());
-        assertEquals("TRANSFER", transaction.getTransactionType());
-    }
-
-    /**
-     * Method under test: {@link MakeTransferUseCase#makeTransfer(Transaction)}
-     */
-    @Test
-    @Disabled("TODO: Complete this test")
-    void testMakeTransfer2() throws NotEnoughMoneyException, WalletNotFoundException {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   java.lang.NullPointerException
-        //       at java.math.BigDecimal.compareTo(BigDecimal.java:3079)
-        //       at com.iobuilders.mylittebank.domain.service.MakeTransferService.hasOriginBalanceEnough(MakeTransferService.java:42)
-        //       at com.iobuilders.mylittebank.domain.service.MakeTransferService.makeTransfer(MakeTransferService.java:32)
-        //   See https://diff.blue/R013 to resolve this issue.
-
-        doNothing().when(makeTransferPort).createTransfer(Mockito.<Transaction>any());
-
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
-        Wallet wallet = mock(Wallet.class);
-        when(wallet.getBalance()).thenReturn(null);
-        doNothing().when(wallet).setBalance(Mockito.<BigDecimal>any());
-        doNothing().when(wallet).setTransactionList(Mockito.<List<Transaction>>any());
-        doNothing().when(wallet).setUser(Mockito.<User>any());
-        doNothing().when(wallet).setWalletId(anyLong());
-        wallet.setBalance(BigDecimal.valueOf(1L));
-        wallet.setTransactionList(new ArrayList<>());
-        wallet.setUser(user);
-        wallet.setWalletId(1L);
-        when(obtainWalletPort.obtainWalletPort(Mockito.<Long>any())).thenReturn(wallet);
-        doNothing().when(updateWalletPort).updateWallet(Mockito.<Wallet>any());
-
-        User user2 = new User();
-        user2.setEmail("jane.doe@example.org");
-        user2.setName("Name");
-        user2.setPhoneNumber("6625550144");
-        user2.setUserId(1L);
-        user2.setWallet(new HashSet<>());
-
-        Wallet destinationWallet = new Wallet();
-        destinationWallet.setBalance(BigDecimal.valueOf(1L));
-        destinationWallet.setTransactionList(new ArrayList<>());
-        destinationWallet.setUser(user2);
-        destinationWallet.setWalletId(1L);
-
-        User user3 = new User();
-        user3.setEmail("jane.doe@example.org");
-        user3.setName("Name");
-        user3.setPhoneNumber("6625550144");
-        user3.setUserId(1L);
-        user3.setWallet(new HashSet<>());
-
-        Wallet originWallet = new Wallet();
-        originWallet.setBalance(BigDecimal.valueOf(1L));
-        originWallet.setTransactionList(new ArrayList<>());
-        originWallet.setUser(user3);
-        originWallet.setWalletId(1L);
-
-        Transaction transaction = new Transaction();
-        transaction.setAmount(BigDecimal.valueOf(1L));
-        transaction.setDestinationWallet(destinationWallet);
-        transaction.setOriginWallet(originWallet);
-        transaction.setTransactionDateTime(LocalDate.of(1970, 1, 1).atStartOfDay());
-        transaction.setTransactionId(1L);
-        transaction.setTransactionType("Transaction Type");
-        try {
-            makeTransferService.makeTransfer(transaction);
-        } catch (com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    void makeTransfer_walletNotFoundException() throws  WalletNotFoundException {
+        Transaction transaction = generateTransfer(generateWallet(generateUser()),generateWallet(generateUser()),BigDecimal.TEN);
+        doThrow(new WalletNotFoundException(transaction.getDestinationWallet().getWalletId())).when(obtainWalletPort).obtainWallet(transaction.getDestinationWallet().getWalletId());
+        assertThrows(WalletNotFoundException.class, () -> makeTransferService.makeTransfer(transaction));
     }
 }
 

@@ -49,6 +49,13 @@
             <artifactId>core</artifactId>
             <version>4.8.1</version>
         </dependency>
+        <!-- Lombok para logging -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.28</version>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

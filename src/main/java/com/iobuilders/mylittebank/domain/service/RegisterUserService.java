@@ -3,7 +3,9 @@ package com.iobuilders.mylittebank.domain.service;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.ports.inbound.RegisterUserUseCase;
 import com.iobuilders.mylittebank.domain.ports.outbound.RegisterUserPort;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RegisterUserService implements RegisterUserUseCase {
 
     private final RegisterUserPort registerUserPort;
@@ -13,7 +15,8 @@ public class RegisterUserService implements RegisterUserUseCase {
     }
 
     @Override
-    public void registerUser(User user) {
-        registerUserPort.registerUser(user);
+    public Long registerUser(User user) {
+        log.debug("Starting domain service registerUser with user {}", user);
+        return registerUserPort.registerUser(user);
     }
 }

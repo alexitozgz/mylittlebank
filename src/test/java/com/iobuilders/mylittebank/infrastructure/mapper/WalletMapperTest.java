@@ -1,27 +1,22 @@
 package com.iobuilders.mylittebank.infrastructure.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
-import com.iobuilders.mylittebank.infrastructure.persistence.entity.UserEntity;
 import com.iobuilders.mylittebank.infrastructure.persistence.entity.WalletEntity;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-
+import com.iobuilders.mylittebank.util.MyLittleBankTestUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateUser;
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateWallet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes = {WalletMapper.class})
 @ExtendWith(SpringExtension.class)
@@ -32,76 +27,62 @@ class WalletMapperTest {
     @Autowired
     private WalletMapper walletMapper;
 
-    /**
-     * Method under test: {@link WalletMapper#toWallet(WalletEntity)}
-     */
     @Test
-    void testToWallet() {
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
+    void toWalletEntity_ok() {
+        Wallet wallet = generateWallet(generateUser());
+        WalletEntity walletEntity  = MyLittleBankTestUtils.generateWalletEntity(wallet);
 
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.valueOf(1L));
-        wallet.setTransactionList(new ArrayList<>());
-        wallet.setUser(user);
-        wallet.setWalletId(1L);
-        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<Wallet>>any())).thenReturn(wallet);
+        when(modelMapper.map(wallet, WalletEntity.class)).thenReturn(walletEntity);
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
-        userEntity.setName("Name");
-        userEntity.setPhoneNumber("6625550144");
-        userEntity.setUserId(1L);
-        userEntity.setWallet(new HashSet<>());
+        WalletEntity walletEntityResult = walletMapper.toWalletEntity(wallet);
 
-        WalletEntity walletEntity = new WalletEntity();
-        walletEntity.setBalance(BigDecimal.valueOf(1L));
-        walletEntity.setUser(userEntity);
-        walletEntity.setWalletId(1L);
-        Wallet actualToWalletResult = walletMapper.toWallet(walletEntity);
-        assertSame(wallet, actualToWalletResult);
-        assertEquals("1", actualToWalletResult.getBalance().toString());
-        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<Wallet>>any());
+        assertSame(walletEntity, walletEntityResult);
+
+        assertEquals(walletEntity.getWalletId(),walletEntityResult.getWalletId());
+        assertEquals(walletEntity.getBalance(),walletEntityResult.getBalance());
+        assertEquals(walletEntity.getUser(),walletEntityResult.getUser());
+
     }
 
-    /**
-     * Method under test: {@link WalletMapper#toWalletEntity(Wallet)}
-     */
     @Test
-    void testToWalletEntity() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
-        userEntity.setName("Name");
-        userEntity.setPhoneNumber("6625550144");
-        userEntity.setUserId(1L);
-        userEntity.setWallet(new HashSet<>());
+    void toWalletEntity_verify_mapper_calls() {
+        Wallet wallet = generateWallet(generateUser());
+        WalletEntity walletEntity  = MyLittleBankTestUtils.generateWalletEntity(wallet);
 
-        WalletEntity walletEntity = new WalletEntity();
-        walletEntity.setBalance(BigDecimal.valueOf(1L));
-        walletEntity.setUser(userEntity);
-        walletEntity.setWalletId(1L);
-        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<WalletEntity>>any())).thenReturn(walletEntity);
+        when(modelMapper.map(wallet, WalletEntity.class)).thenReturn(walletEntity);
 
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
+        walletMapper.toWalletEntity(wallet);
 
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.valueOf(1L));
-        wallet.setTransactionList(new ArrayList<>());
-        wallet.setUser(user);
-        wallet.setWalletId(1L);
-        WalletEntity actualToWalletEntityResult = walletMapper.toWalletEntity(wallet);
-        assertSame(walletEntity, actualToWalletEntityResult);
-        assertEquals("1", actualToWalletEntityResult.getBalance().toString());
-        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<WalletEntity>>any());
+        verify(modelMapper).map(wallet, WalletEntity.class);
     }
+
+    @Test
+    void toWallet_ok() {
+        Wallet wallet = generateWallet(generateUser());
+        WalletEntity walletEntity  = MyLittleBankTestUtils.generateWalletEntity(wallet);
+
+        when(modelMapper.map(walletEntity, Wallet.class)).thenReturn(wallet);
+
+        Wallet walletResult = walletMapper.toWallet(walletEntity);
+
+        assertSame(wallet, walletResult);
+
+        assertEquals(wallet.getWalletId(),walletResult.getWalletId());
+        assertEquals(wallet.getBalance(),walletResult.getBalance());
+        assertEquals(wallet.getUser(),walletResult.getUser());
+    }
+
+    @Test
+    void toWallet_verify_mapper_calls() {
+        Wallet wallet = generateWallet(generateUser());
+        WalletEntity walletEntity  = MyLittleBankTestUtils.generateWalletEntity(wallet);
+
+        when(modelMapper.map(walletEntity, Wallet.class)).thenReturn(wallet);
+
+        walletMapper.toWallet(walletEntity);
+
+        verify(modelMapper).map(walletEntity, Wallet.class);
+    }
+
 }
 

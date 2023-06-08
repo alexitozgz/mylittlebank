@@ -1,24 +1,11 @@
 package com.iobuilders.mylittebank.domain.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
 import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.domain.ports.outbound.ObtainTransactionsByWalletPort;
 import com.iobuilders.mylittebank.domain.ports.outbound.ObtainWalletPort;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -27,9 +14,22 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateTransactionsList;
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateUser;
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateWallet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @ContextConfiguration(classes = {ObtainBalanceTransactionsByWalletUseCaseService.class})
 @ExtendWith(SpringExtension.class)
 class ObtainBalanceTransactionsByWalletUseCaseServiceTest {
+    public static final long WALLET_ID = 2L;
     @Autowired
     private ObtainBalanceTransactionsByWalletUseCaseService obtainBalanceTransactionsByWalletUseCaseService;
 
@@ -39,66 +39,51 @@ class ObtainBalanceTransactionsByWalletUseCaseServiceTest {
     @MockBean
     private ObtainWalletPort obtainWalletPort;
 
-    /**
-     * Method under test: {@link ObtainBalanceTransactionsByWalletUseCaseService#ObtainBalanceTransactionsByWalletUseCaseService(ObtainTransactionsByWalletPort, ObtainWalletPort)}
-     */
+
     @Test
-    void testConstructor() {
-        // TODO: Complete this test.
-        //   Reason: R002 Missing observers.
-        //   Diffblue Cover was unable to create an assertion.
-        //   Add getters for the following fields or make them package-private:
-        //     ObtainBalanceTransactionsByWalletUseCaseService.obtainTransactionsByWalletPort
-        //     ObtainBalanceTransactionsByWalletUseCaseService.obtainWalletPort
+    void obtainBalanceTransactionsByWallet_ok() throws WalletNotFoundException {
+        User user = generateUser();
 
-        new ObtainBalanceTransactionsByWalletUseCaseService(mock(ObtainTransactionsByWalletPort.class),
-                mock(ObtainWalletPort.class));
+        Wallet wallet = generateWallet(user);
 
+        List<Transaction> transactionList = generateTransactionsList(wallet);
+
+        when(obtainTransactionsByWalletPort.obtainTransactionsByWallet(wallet)).thenReturn(transactionList);
+        when(obtainWalletPort.obtainWallet(wallet.getWalletId())).thenReturn(wallet);
+
+        Wallet walletResult = obtainBalanceTransactionsByWalletUseCaseService.obtainBalanceTransactionsByWallet(wallet.getWalletId());
+
+        assertSame(wallet, walletResult);
+        assertEquals(transactionList, walletResult.getTransactionList());
+        assertEquals(wallet.getBalance(), walletResult.getBalance());
     }
 
-    /**
-     * Method under test: {@link ObtainBalanceTransactionsByWalletUseCaseService#obtainBalanceTransactionsByWallet(Long)}
-     */
     @Test
-    void testObtainBalanceTransactionsByWallet() throws WalletNotFoundException {
-        when(obtainTransactionsByWalletPort.obtainTransactionsByWalletPort(Mockito.<Wallet>any()))
-                .thenReturn(new ArrayList<>());
+    void obtainBalanceTransactionsByWallet_verify_port_calls() throws WalletNotFoundException {
+        User user = generateUser();
 
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
+        Wallet wallet = generateWallet(user);
 
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.valueOf(1L));
-        ArrayList<Transaction> transactionList = new ArrayList<>();
-        wallet.setTransactionList(transactionList);
-        wallet.setUser(user);
-        wallet.setWalletId(1L);
-        when(obtainWalletPort.obtainWalletPort(Mockito.<Long>any())).thenReturn(wallet);
-        Wallet actualObtainBalanceTransactionsByWalletResult = obtainBalanceTransactionsByWalletUseCaseService
-                .obtainBalanceTransactionsByWallet(1L);
-        assertSame(wallet, actualObtainBalanceTransactionsByWalletResult);
-        assertEquals(transactionList, actualObtainBalanceTransactionsByWalletResult.getTransactionList());
-        assertEquals("1", actualObtainBalanceTransactionsByWalletResult.getBalance().toString());
-        verify(obtainTransactionsByWalletPort).obtainTransactionsByWalletPort(Mockito.<Wallet>any());
-        verify(obtainWalletPort).obtainWalletPort(Mockito.<Long>any());
+        List<Transaction> transactionList = generateTransactionsList(wallet);
+
+        when(obtainTransactionsByWalletPort.obtainTransactionsByWallet(wallet)).thenReturn(transactionList);
+        when(obtainWalletPort.obtainWallet(wallet.getWalletId())).thenReturn(wallet);
+
+        obtainBalanceTransactionsByWalletUseCaseService.obtainBalanceTransactionsByWallet(wallet.getWalletId());
+
+        verify(obtainTransactionsByWalletPort).obtainTransactionsByWallet(wallet);
+        verify(obtainWalletPort).obtainWallet(wallet.getWalletId());
     }
 
-    /**
-     * Method under test: {@link ObtainBalanceTransactionsByWalletUseCaseService#obtainBalanceTransactionsByWallet(Long)}
-     */
     @Test
-    void testObtainBalanceTransactionsByWallet2() throws WalletNotFoundException {
-        when(obtainTransactionsByWalletPort.obtainTransactionsByWalletPort(Mockito.any()))
+    void obtainBalanceTransactionsByWallet_WalletNotFoundException() throws WalletNotFoundException {
+        when(obtainTransactionsByWalletPort.obtainTransactionsByWallet(Mockito.any()))
                 .thenReturn(new ArrayList<>());
-        when(obtainWalletPort.obtainWalletPort(2L))
-                .thenThrow(new WalletNotFoundException(2L));
+        when(obtainWalletPort.obtainWallet(WALLET_ID))
+                .thenThrow(new WalletNotFoundException(WALLET_ID));
         assertThrows(WalletNotFoundException.class,
-                () -> obtainBalanceTransactionsByWalletUseCaseService.obtainBalanceTransactionsByWallet(2L));
-        verify(obtainWalletPort).obtainWalletPort(Mockito.<Long>any());
+                () -> obtainBalanceTransactionsByWalletUseCaseService.obtainBalanceTransactionsByWallet(WALLET_ID));
+        verify(obtainWalletPort).obtainWallet(Mockito.<Long>any());
     }
 }
 

@@ -9,26 +9,13 @@ import java.util.HashSet;
 import org.junit.jupiter.api.Test;
 
 class WalletEntityTest {
-    /**
-     * Methods under test:
-     *
-     * <ul>
-     *   <li>default or parameterless constructor of {@link WalletEntity}
-     *   <li>{@link WalletEntity#setBalance(BigDecimal)}
-     *   <li>{@link WalletEntity#setUser(UserEntity)}
-     *   <li>{@link WalletEntity#setWalletId(long)}
-     *   <li>{@link WalletEntity#getBalance()}
-     *   <li>{@link WalletEntity#getUser()}
-     *   <li>{@link WalletEntity#getWalletId()}
-     * </ul>
-     */
     @Test
     void testConstructor() {
         WalletEntity actualWalletEntity = new WalletEntity();
         BigDecimal balance = BigDecimal.valueOf(1L);
         actualWalletEntity.setBalance(balance);
         UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
+        userEntity.setEmail("example@unejemplo.es");
         userEntity.setName("Name");
         userEntity.setPhoneNumber("6625550144");
         userEntity.setUserId(1L);

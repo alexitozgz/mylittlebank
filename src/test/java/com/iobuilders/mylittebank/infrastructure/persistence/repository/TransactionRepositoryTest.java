@@ -24,81 +24,12 @@ class TransactionRepositoryTest {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    /**
-     * Method under test: {@link TransactionRepository#getTransactionEntitiesByOriginWalletOrDestinationWallet(long)}
-     */
     @Test
-    @Disabled("TODO: Complete this test")
-    void testGetTransactionEntitiesByOriginWalletOrDestinationWallet() {
-        // TODO: Complete this test.
-        //   Reason: R013 No inputs found that don't throw a trivial exception.
-        //   Diffblue Cover tried to run the arrange/act section, but the method under
-        //   test threw
-        //   org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint [FKDUUVOX0PC6EURJOBAKXG63P24]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement
-        //       at com.sun.proxy.$Proxy131.getTransactionEntitiesByOriginWalletOrDestinationWallet(null)
-        //   org.hibernate.exception.ConstraintViolationException: could not execute statement
-        //       at org.hibernate.exception.internal.SQLExceptionTypeDelegate.convert(SQLExceptionTypeDelegate.java:59)
-        //       at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:37)
-        //       at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:113)
-        //       at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:99)
-        //       at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:200)
-        //       at org.hibernate.engine.jdbc.batch.internal.NonBatchingBatch.addToBatch(NonBatchingBatch.java:46)
-        //       at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3375)
-        //       at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3937)
-        //       at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:107)
-        //       at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:604)
-        //       at org.hibernate.engine.spi.ActionQueue.lambda$executeActions$1(ActionQueue.java:478)
-        //       at java.util.LinkedHashMap.forEach(LinkedHashMap.java:684)
-        //       at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:475)
-        //       at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:344)
-        //       at org.hibernate.event.internal.DefaultAutoFlushEventListener.onAutoFlush(DefaultAutoFlushEventListener.java:57)
-        //       at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:107)
-        //       at org.hibernate.internal.SessionImpl.autoFlushIfRequired(SessionImpl.java:1372)
-        //       at org.hibernate.internal.SessionImpl.list(SessionImpl.java:1452)
-        //       at org.hibernate.query.internal.AbstractProducedQuery.doList(AbstractProducedQuery.java:1649)
-        //       at org.hibernate.query.internal.AbstractProducedQuery.list(AbstractProducedQuery.java:1617)
-        //       at org.hibernate.query.Query.getResultList(Query.java:165)
-        //       at com.sun.proxy.$Proxy131.getTransactionEntitiesByOriginWalletOrDestinationWallet(null)
-        //   org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException: Violación de una restricción de Integridad Referencial: "FKDUUVOX0PC6EURJOBAKXG63P24: PUBLIC.TRANSACTION FOREIGN KEY(DESTINATION_WALLET_ID) REFERENCES PUBLIC.WALLET(WALLET_ID) (CAST(1 AS BIGINT))"
-        //   Referential integrity constraint violation: "FKDUUVOX0PC6EURJOBAKXG63P24: PUBLIC.TRANSACTION FOREIGN KEY(DESTINATION_WALLET_ID) REFERENCES PUBLIC.WALLET(WALLET_ID) (CAST(1 AS BIGINT))"; SQL statement:
-        //   insert into transaction (amount, destination_wallet_id, origin_wallet_id, transaction_date_time, transaction_type, transaction_id) values (?, ?, ?, ?, ?, ?) [23506-214]
-        //       at org.h2.message.DbException.getJdbcSQLException(DbException.java:508)
-        //       at org.h2.message.DbException.getJdbcSQLException(DbException.java:477)
-        //       at org.h2.message.DbException.get(DbException.java:223)
-        //       at org.h2.message.DbException.get(DbException.java:199)
-        //       at org.h2.constraint.ConstraintReferential.checkRowOwnTable(ConstraintReferential.java:311)
-        //       at org.h2.constraint.ConstraintReferential.checkRow(ConstraintReferential.java:252)
-        //       at org.h2.table.Table.fireConstraints(Table.java:1172)
-        //       at org.h2.table.Table.fireAfterRow(Table.java:1190)
-        //       at org.h2.command.dml.Insert.insertRows(Insert.java:188)
-        //       at org.h2.command.dml.Insert.update(Insert.java:135)
-        //       at org.h2.command.dml.DataChangeStatement.update(DataChangeStatement.java:74)
-        //       at org.h2.command.CommandContainer.update(CommandContainer.java:169)
-        //       at org.h2.command.Command.executeUpdate(Command.java:252)
-        //       at org.h2.jdbc.JdbcPreparedStatement.executeUpdateInternal(JdbcPreparedStatement.java:209)
-        //       at org.h2.jdbc.JdbcPreparedStatement.executeUpdate(JdbcPreparedStatement.java:169)
-        //       at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197)
-        //       at org.hibernate.engine.jdbc.batch.internal.NonBatchingBatch.addToBatch(NonBatchingBatch.java:46)
-        //       at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3375)
-        //       at org.hibernate.persister.entity.AbstractEntityPersister.insert(AbstractEntityPersister.java:3937)
-        //       at org.hibernate.action.internal.EntityInsertAction.execute(EntityInsertAction.java:107)
-        //       at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:604)
-        //       at org.hibernate.engine.spi.ActionQueue.lambda$executeActions$1(ActionQueue.java:478)
-        //       at java.util.LinkedHashMap.forEach(LinkedHashMap.java:684)
-        //       at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:475)
-        //       at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:344)
-        //       at org.hibernate.event.internal.DefaultAutoFlushEventListener.onAutoFlush(DefaultAutoFlushEventListener.java:57)
-        //       at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:107)
-        //       at org.hibernate.internal.SessionImpl.autoFlushIfRequired(SessionImpl.java:1372)
-        //       at org.hibernate.internal.SessionImpl.list(SessionImpl.java:1452)
-        //       at org.hibernate.query.internal.AbstractProducedQuery.doList(AbstractProducedQuery.java:1649)
-        //       at org.hibernate.query.internal.AbstractProducedQuery.list(AbstractProducedQuery.java:1617)
-        //       at org.hibernate.query.Query.getResultList(Query.java:165)
-        //       at com.sun.proxy.$Proxy131.getTransactionEntitiesByOriginWalletOrDestinationWallet(null)
-        //   See https://diff.blue/R013 to resolve this issue.
+    @Disabled("TODO: Complete this test - Fails H2 constraint")
+    void getTransactionEntitiesByOriginWalletOrDestinationWallet_ok() {
 
         UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
+        userEntity.setEmail("example@unejemplo.es");
         userEntity.setName("Name");
         userEntity.setPhoneNumber("6625550144");
         userEntity.setUserId(1L);
@@ -110,7 +41,7 @@ class TransactionRepositoryTest {
         destinationWallet.setWalletId(1L);
 
         UserEntity userEntity2 = new UserEntity();
-        userEntity2.setEmail("jane.doe@example.org");
+        userEntity2.setEmail("example@unejemplo.es");
         userEntity2.setName("Name");
         userEntity2.setPhoneNumber("6625550144");
         userEntity2.setUserId(1L);

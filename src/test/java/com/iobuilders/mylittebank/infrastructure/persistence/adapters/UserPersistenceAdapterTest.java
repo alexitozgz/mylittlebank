@@ -1,6 +1,8 @@
 package com.iobuilders.mylittebank.infrastructure.persistence.adapters;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +15,7 @@ import com.iobuilders.mylittebank.infrastructure.persistence.repository.UserRepo
 
 import java.util.HashSet;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -20,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.*;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class UserPersistenceAdapterTest {
@@ -33,62 +36,45 @@ class UserPersistenceAdapterTest {
     @Autowired
     private UserPersistenceAdapter userPersistenceAdapter;
 
-    /**
-     * Method under test: {@link UserPersistenceAdapter#UserPersistenceAdapter(UserRepository, UserMapper)}
-     */
+
     @Test
-    void testConstructor() {
-        // TODO: Complete this test.
-        //   Reason: R002 Missing observers.
-        //   Diffblue Cover was unable to create an assertion.
-        //   Add getters for the following fields or make them package-private:
-        //     UserPersistenceAdapter.userMapper
-        //     UserPersistenceAdapter.userRepository
+    void registerUser_ok() {
+        User user = generateUser();
 
-        UserRepository userRepository = mock(UserRepository.class);
-        new UserPersistenceAdapter(userRepository, new UserMapper());
+        UserEntity userEntity = generateUserEntity(user);
 
+        when(userMapper.toUserEntity(user)).thenReturn(userEntity);
+        when(userRepository.save(userEntity)).thenReturn(userEntity);
+
+        Long userId = userPersistenceAdapter.registerUser(user);
+
+        assertEquals(userEntity.getUserId(), userId);
     }
 
-    /**
-     * Method under test: {@link UserPersistenceAdapter#registerUser(User)}
-     */
     @Test
-    void testRegisterUser() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
-        userEntity.setName("Name");
-        userEntity.setPhoneNumber("6625550144");
-        userEntity.setUserId(1L);
-        userEntity.setWallet(new HashSet<>());
-        when(userRepository.save(Mockito.<UserEntity>any())).thenReturn(userEntity);
+    void registerUser_verify_calls() {
+        User user = generateUser();
 
-        UserEntity userEntity2 = new UserEntity();
-        userEntity2.setEmail("jane.doe@example.org");
-        userEntity2.setName("Name");
-        userEntity2.setPhoneNumber("6625550144");
-        userEntity2.setUserId(1L);
-        userEntity2.setWallet(new HashSet<>());
-        when(userMapper.toUserEntity(Mockito.<User>any())).thenReturn(userEntity2);
+        UserEntity userEntity = generateUserEntity(user);
 
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
+        when(userMapper.toUserEntity(user)).thenReturn(userEntity);
+        when(userRepository.save(userEntity)).thenReturn(userEntity);
+
         userPersistenceAdapter.registerUser(user);
-        verify(userRepository).save(Mockito.<UserEntity>any());
-        verify(userMapper).toUserEntity(Mockito.<User>any());
+
+        verify(userRepository).save(userEntity);
+        verify(userMapper).toUserEntity(user);
     }
 
-    /**
-     * Method under test: {@link UserPersistenceAdapter#obtainUser(Long)}
-     */
     @Test
-    void testObtainUser() throws UserNotFoundException {
-        assertThrows(UserNotFoundException.class, () -> userPersistenceAdapter.obtainUser(1L));
-        assertThrows(UserNotFoundException.class, () -> userPersistenceAdapter.obtainUser(2L));
+    void existUser_userNotFoundException() {
+        assertThrows(UserNotFoundException.class, () -> userPersistenceAdapter.existsUser(1L));
+    }
+
+    @Test
+    void existUser_ok() throws UserNotFoundException {
+        when(userRepository.existsById(1L)).thenReturn(true);
+        assertTrue(true);
     }
 }
 

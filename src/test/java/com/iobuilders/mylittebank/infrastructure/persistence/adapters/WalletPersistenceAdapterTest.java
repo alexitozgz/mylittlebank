@@ -1,12 +1,14 @@
 package com.iobuilders.mylittebank.infrastructure.persistence.adapters;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
 import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
+import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.infrastructure.mapper.WalletMapper;
@@ -17,6 +19,7 @@ import com.iobuilders.mylittebank.infrastructure.persistence.repository.WalletRe
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.*;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class WalletPersistenceAdapterTest {
@@ -38,99 +41,77 @@ class WalletPersistenceAdapterTest {
     @MockBean
     private WalletRepository walletRepository;
 
-    /**
-     * Method under test: {@link WalletPersistenceAdapter#WalletPersistenceAdapter(WalletRepository, WalletMapper)}
-     */
+
     @Test
-    void testConstructor() {
-        // TODO: Complete this test.
-        //   Reason: R002 Missing observers.
-        //   Diffblue Cover was unable to create an assertion.
-        //   Add getters for the following fields or make them package-private:
-        //     WalletPersistenceAdapter.walletMapper
-        //     WalletPersistenceAdapter.walletRepository
-
-        WalletRepository walletRepository = mock(WalletRepository.class);
-        new WalletPersistenceAdapter(walletRepository, new WalletMapper());
-
-    }
-
-    /**
-     * Method under test: {@link WalletPersistenceAdapter#createWallet(Long)}
-     */
-    @Test
-    void testCreateWallet() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
-        userEntity.setName("Name");
-        userEntity.setPhoneNumber("6625550144");
-        userEntity.setUserId(1L);
-        userEntity.setWallet(new HashSet<>());
-
-        WalletEntity walletEntity = new WalletEntity();
-        walletEntity.setBalance(BigDecimal.valueOf(1L));
-        walletEntity.setUser(userEntity);
-        walletEntity.setWalletId(1L);
-        when(walletRepository.save(Mockito.<WalletEntity>any())).thenReturn(walletEntity);
-        walletPersistenceAdapter.createWallet(1L);
-        verify(walletRepository).save(Mockito.<WalletEntity>any());
-    }
-
-    /**
-     * Method under test: {@link WalletPersistenceAdapter#obtainWalletPort(Long)}
-     */
-    @Test
-    void testObtainWalletPort() throws WalletNotFoundException {
-        assertThrows(WalletNotFoundException.class, () -> walletPersistenceAdapter.obtainWalletPort(1L));
-        assertThrows(WalletNotFoundException.class, () -> walletPersistenceAdapter.obtainWalletPort(2L));
-    }
-
-    /**
-     * Method under test: {@link WalletPersistenceAdapter#updateWallet(Wallet)}
-     */
-    @Test
-    void testUpdateWallet() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
-        userEntity.setName("Name");
-        userEntity.setPhoneNumber("6625550144");
-        userEntity.setUserId(1L);
-        userEntity.setWallet(new HashSet<>());
-
-        WalletEntity walletEntity = new WalletEntity();
-        walletEntity.setBalance(BigDecimal.valueOf(1L));
-        walletEntity.setUser(userEntity);
-        walletEntity.setWalletId(1L);
-        when(walletRepository.save(Mockito.<WalletEntity>any())).thenReturn(walletEntity);
-
-        UserEntity userEntity2 = new UserEntity();
-        userEntity2.setEmail("jane.doe@example.org");
-        userEntity2.setName("Name");
-        userEntity2.setPhoneNumber("6625550144");
-        userEntity2.setUserId(1L);
-        userEntity2.setWallet(new HashSet<>());
-
-        WalletEntity walletEntity2 = new WalletEntity();
-        walletEntity2.setBalance(BigDecimal.valueOf(1L));
-        walletEntity2.setUser(userEntity2);
-        walletEntity2.setWalletId(1L);
-        when(walletMapper.toWalletEntity(Mockito.<Wallet>any())).thenReturn(walletEntity2);
-
+    void createWallet_ok() {
         User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
+        Wallet wallet = generateWallet(user);
+        WalletEntity walletEntity = generateWalletEntity(wallet);
 
-        Wallet wallet = new Wallet();
-        wallet.setBalance(BigDecimal.valueOf(1L));
-        wallet.setTransactionList(new ArrayList<>());
-        wallet.setUser(user);
-        wallet.setWalletId(1L);
-        walletPersistenceAdapter.updateWallet(wallet);
-        verify(walletRepository).save(Mockito.<WalletEntity>any());
-        verify(walletMapper).toWalletEntity(Mockito.<Wallet>any());
+        when(walletRepository.save(Mockito.any())).thenReturn(walletEntity);
+
+        assertEquals(walletEntity.getWalletId(), walletPersistenceAdapter.createWallet(user.getUserId()));
     }
+
+    @Test
+    void createWallet_verify_repo_calls() {
+        User user = new User();
+        Wallet wallet = generateWallet(user);
+        WalletEntity walletEntity = generateWalletEntity(wallet);
+
+        when(walletRepository.save(Mockito.any())).thenReturn(walletEntity);
+
+        walletPersistenceAdapter.createWallet(user.getUserId());
+
+        verify(walletRepository).save(Mockito.any());
+    }
+
+    @Test
+    void obtainWallet_ok() throws WalletNotFoundException {
+        User user = new User();
+        Wallet wallet = generateWallet(user);
+        WalletEntity walletEntity = generateWalletEntity(wallet);
+
+        when(walletRepository.findById(wallet.getWalletId())).thenReturn(Optional.of(walletEntity));
+        when(walletMapper.toWallet(walletEntity)).thenReturn(wallet);
+
+        assertEquals(wallet.getWalletId(),walletPersistenceAdapter.obtainWallet(wallet.getWalletId()).getWalletId());
+    }
+
+    @Test
+    void obtainWallet_verify_repo_calls() throws WalletNotFoundException {
+        User user = new User();
+        Wallet wallet = generateWallet(user);
+        WalletEntity walletEntity = generateWalletEntity(wallet);
+
+        when(walletRepository.findById(wallet.getWalletId())).thenReturn(Optional.of(walletEntity));
+        when(walletMapper.toWallet(walletEntity)).thenReturn(wallet);
+
+        walletPersistenceAdapter.obtainWallet(wallet.getWalletId());
+
+        verify(walletRepository).findById(wallet.getWalletId());
+        verify(walletMapper).toWallet(walletEntity);
+    }
+
+    @Test
+    void obtainWallet_walletNotFoundException(){
+        assertThrows(WalletNotFoundException.class, () -> walletPersistenceAdapter.obtainWallet(1L));
+    }
+
+    @Test
+    void updateWallet_verify_repo_mapper_calls() {
+        User user = new User();
+        Wallet wallet = generateWallet(user);
+        WalletEntity walletEntity = generateWalletEntity(wallet);
+
+        when(walletMapper.toWalletEntity(wallet)).thenReturn(walletEntity);
+        when(walletRepository.save(walletEntity)).thenReturn(walletEntity);
+
+        walletPersistenceAdapter.updateWallet(wallet);
+
+        verify(walletRepository).save(walletEntity);
+        verify(walletMapper).toWalletEntity(wallet);
+    }
+
 }
 

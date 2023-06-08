@@ -10,6 +10,7 @@ import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.ports.inbound.MakeDepositUseCase;
 import com.iobuilders.mylittebank.domain.ports.inbound.MakeTransferUseCase;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,7 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/transactions")
+@Slf4j
 public class TransactionController {
     private final MakeDepositUseCase makeDepositUseCase;
     private final MakeTransferUseCase makeTransferUseCase;
@@ -38,15 +40,19 @@ public class TransactionController {
 
     @PostMapping("/deposit")
     public ResponseEntity<Object> makeDeposit(@Valid @NotNull @RequestBody MakeDepositRequest makeDepositRequest) throws WalletNotFoundException {
+        log.info("Starting makeDeposit {}", makeDepositRequest);
         Transaction transaction = makeDepositRequestMapper.toTransaction(makeDepositRequest);
-        makeDepositUseCase.makeDeposit(transaction);
-        return ResponseEntity.ok(new MyLittleBankResponse(HttpStatus.CREATED, "Deposit created"));
+        Long depositId = makeDepositUseCase.makeDeposit(transaction);
+        log.info("Finishing makeDeposit successfully");
+        return new ResponseEntity<>(new MyLittleBankResponse(HttpStatus.CREATED, "Deposit created with id "+depositId), HttpStatus.CREATED);
     }
 
     @PostMapping("/transfer")
     public ResponseEntity<Object> makeTransfer(@Valid @NotNull @RequestBody MakeTransferRequest makeTransferRequest) throws NotEnoughMoneyException, WalletNotFoundException {
+        log.info("Starting makeTransfer {}", makeTransferRequest);
         Transaction transaction = makeTransferRequestMapper.toTransaction(makeTransferRequest);
-        makeTransferUseCase.makeTransfer(transaction);
-        return ResponseEntity.ok(new MyLittleBankResponse(HttpStatus.CREATED, "Transfer created"));
+        Long transferId = makeTransferUseCase.makeTransfer(transaction);
+        log.info("Finishing makeTransfer successfully");
+        return new ResponseEntity<>(new MyLittleBankResponse(HttpStatus.CREATED, "Transfer created with id "+transferId), HttpStatus.CREATED);
     }
 }

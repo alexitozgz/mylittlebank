@@ -6,5 +6,5 @@ import com.iobuilders.mylittebank.domain.model.Wallet;
 import java.util.List;
 
 public interface ObtainTransactionsByWalletPort {
-    List<Transaction> obtainTransactionsByWalletPort(Wallet wallet);
+    List<Transaction> obtainTransactionsByWallet(Wallet wallet);
 }

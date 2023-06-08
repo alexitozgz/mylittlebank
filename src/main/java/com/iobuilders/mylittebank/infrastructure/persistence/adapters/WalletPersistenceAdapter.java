@@ -25,17 +25,17 @@ public class WalletPersistenceAdapter implements CreateWalletPort, ObtainWalletP
 
 
     @Override
-    public void createWallet(Long userId) {
+    public Long createWallet(Long userId) {
         UserEntity userEntity = new UserEntity();
         userEntity.setUserId(userId);
         WalletEntity walletEntity = new WalletEntity();
         walletEntity.setUser(userEntity);
         walletEntity.setBalance(BigDecimal.ZERO);
-        walletRepository.save(walletEntity);
+        return walletRepository.save(walletEntity).getWalletId();
     }
 
     @Override
-    public Wallet obtainWalletPort(Long walletId) throws WalletNotFoundException {
+    public Wallet obtainWallet(Long walletId) throws WalletNotFoundException {
         WalletEntity walletEntity = walletRepository.findById(walletId).orElseThrow(() -> new WalletNotFoundException(walletId));
         return walletMapper.toWallet(walletEntity);
     }

@@ -86,8 +86,8 @@ public class BeanConfiguration {
     }
 
     @Bean
-    public TransactionPersistenceAdapter depositPersistenceAdapter(TransactionRepository transactionRepository, TransactionMapper transactionMapper, WalletMapper walletMapper) {
-        return new TransactionPersistenceAdapter(transactionRepository, transactionMapper, walletMapper);
+    public TransactionPersistenceAdapter depositPersistenceAdapter(TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
+        return new TransactionPersistenceAdapter(transactionRepository, transactionMapper);
     }
 
     @Bean

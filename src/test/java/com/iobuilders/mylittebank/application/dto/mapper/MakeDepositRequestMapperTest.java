@@ -1,28 +1,28 @@
 package com.iobuilders.mylittebank.application.dto.mapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.iobuilders.mylittebank.application.dto.request.MakeDepositRequest;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.math.BigDecimal;
+
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateDeposit;
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateUser;
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateWallet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 
 @ContextConfiguration(classes = {MakeDepositRequestMapper.class})
 @ExtendWith(SpringExtension.class)
@@ -32,54 +32,45 @@ class MakeDepositRequestMapperTest {
 
     @MockBean
     private ModelMapper modelMapper;
+    private MakeDepositRequest makeDepositRequest;
 
-    /**
-     * Method under test: {@link MakeDepositRequestMapper#toTransaction(MakeDepositRequest)}
-     */
-    @Test
-    void testToTransaction() {
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
+    @BeforeEach
+    void init() {
+        User user = generateUser();
 
-        Wallet destinationWallet = new Wallet();
-        destinationWallet.setBalance(BigDecimal.valueOf(1L));
-        destinationWallet.setTransactionList(new ArrayList<>());
-        destinationWallet.setUser(user);
-        destinationWallet.setWalletId(1L);
+        Wallet destinationWallet = generateWallet(user);
 
-        User user2 = new User();
-        user2.setEmail("jane.doe@example.org");
-        user2.setName("Name");
-        user2.setPhoneNumber("6625550144");
-        user2.setUserId(1L);
-        user2.setWallet(new HashSet<>());
+        Transaction transaction = generateDeposit(destinationWallet, BigDecimal.valueOf(1));
 
-        Wallet originWallet = new Wallet();
-        originWallet.setBalance(BigDecimal.valueOf(1L));
-        originWallet.setTransactionList(new ArrayList<>());
-        originWallet.setUser(user2);
-        originWallet.setWalletId(1L);
+        makeDepositRequest = new MakeDepositRequest();
+        makeDepositRequest.setAmount(transaction.getAmount());
+        makeDepositRequest.setDestinationWalletId(destinationWallet.getWalletId());
 
-        Transaction transaction = new Transaction();
-        transaction.setAmount(BigDecimal.valueOf(1L));
-        transaction.setDestinationWallet(destinationWallet);
-        transaction.setOriginWallet(originWallet);
-        transaction.setTransactionDateTime(LocalDate.of(1970, 1, 1).atStartOfDay());
-        transaction.setTransactionId(1L);
-        transaction.setTransactionType("Transaction Type");
-        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<Transaction>>any())).thenReturn(transaction);
-
-        MakeDepositRequest makeDepositRequest = new MakeDepositRequest();
-        makeDepositRequest.setAmount(BigDecimal.valueOf(1L));
-        makeDepositRequest.setDestinationWalletId(1L);
-        Transaction actualToTransactionResult = makeDepositRequestMapper.toTransaction(makeDepositRequest);
-        assertSame(transaction, actualToTransactionResult);
-        assertEquals("1", actualToTransactionResult.getAmount().toString());
-        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<Transaction>>any());
+        when(modelMapper.map(makeDepositRequest,Transaction.class)).thenReturn(transaction);
+        when(modelMapper.map(null,Transaction.class)).thenThrow(NullPointerException.class);
     }
+
+    @Test
+    void fromMakeDepositRequestToTransaction_result_ok() {
+
+        Transaction transactionResult = makeDepositRequestMapper.toTransaction(makeDepositRequest);
+
+        assertEquals(makeDepositRequest.getDestinationWalletId(), transactionResult.getDestinationWallet().getWalletId());
+        assertEquals(makeDepositRequest.getAmount(), transactionResult.getAmount());
+
+        verify(modelMapper).map(makeDepositRequest, Transaction.class);
+    }
+
+    @Test
+    void fromMakeDepositRequestToTransaction_verify_map_call() {
+        makeDepositRequestMapper.toTransaction(makeDepositRequest);
+        verify(modelMapper).map(makeDepositRequest, Transaction.class);
+    }
+
+    @Test
+    void fromMakeDepositRequestToTransaction_result_ko() {
+        assertThrows(NullPointerException.class, () -> makeDepositRequestMapper.toTransaction(null));
+    }
+
 }
 

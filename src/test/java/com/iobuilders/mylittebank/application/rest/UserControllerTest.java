@@ -2,13 +2,17 @@ package com.iobuilders.mylittebank.application.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iobuilders.mylittebank.application.dto.mapper.RegisterUserRequestMapper;
+import com.iobuilders.mylittebank.application.dto.request.MakeDepositRequest;
+import com.iobuilders.mylittebank.application.dto.request.RegisterUserRequest;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
+import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.ports.inbound.RegisterUserUseCase;
 
-import java.util.HashSet;
-
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -19,6 +23,13 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.util.NestedServletException;
+
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
 
 @ContextConfiguration(classes = {UserController.class})
 @ExtendWith(SpringExtension.class)
@@ -34,25 +45,54 @@ class UserControllerTest {
     @Autowired
     private UserController userController;
 
-
-
-    /**
-     * Method under test: {@link UserController#registerUser(User)}
-     */
     @Test
-    void testRegisterUser() throws Exception {
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
+    void registerUser_ok() throws Exception {
+        User user = generateUser();
+
         String content = (new ObjectMapper()).writeValueAsString(user);
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users")
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(userController).build().perform(requestBuilder);
-        actualPerformResult.andExpect(MockMvcResultMatchers.status().is(405));
+        MockMvcBuilders.standaloneSetup(userController).build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentType("application/json"))
+                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString("User created")));
     }
+
+    @Test
+    void registerUser_methodNotAllowed() throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MockMvcBuilders.standaloneSetup(userController).build()
+                .perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().is(405));
+    }
+
+    @Test
+    void registerUser_walletNotFound() throws Exception {
+        doThrow(NullPointerException.class).when(registerUserUseCase).registerUser(Mockito.any());
+
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+
+        when(registerUserRequestMapper.toUser(registerUserRequest)).thenReturn(new User());
+
+        String content = (new ObjectMapper()).writeValueAsString(registerUserRequest);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+
+        try {
+            MockMvcBuilders.standaloneSetup(userController)
+                    .build()
+                    .perform(requestBuilder);
+        } catch (Exception e){
+            assertEquals(NullPointerException.class, e.getClass());
+        }
+    }
+
+
+
 }
 

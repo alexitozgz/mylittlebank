@@ -11,31 +11,12 @@ import java.util.HashSet;
 import org.junit.jupiter.api.Test;
 
 class TransactionEntityTest {
-    /**
-     * Methods under test:
-     *
-     * <ul>
-     *   <li>default or parameterless constructor of {@link TransactionEntity}
-     *   <li>{@link TransactionEntity#setAmount(BigDecimal)}
-     *   <li>{@link TransactionEntity#setDestinationWallet(WalletEntity)}
-     *   <li>{@link TransactionEntity#setOriginWallet(WalletEntity)}
-     *   <li>{@link TransactionEntity#setTransactionDateTime(LocalDateTime)}
-     *   <li>{@link TransactionEntity#setTransactionId(long)}
-     *   <li>{@link TransactionEntity#setTransactionType(String)}
-     *   <li>{@link TransactionEntity#getAmount()}
-     *   <li>{@link TransactionEntity#getDestinationWallet()}
-     *   <li>{@link TransactionEntity#getOriginWallet()}
-     *   <li>{@link TransactionEntity#getTransactionDateTime()}
-     *   <li>{@link TransactionEntity#getTransactionId()}
-     *   <li>{@link TransactionEntity#getTransactionType()}
-     * </ul>
-     */
     @Test
     void testConstructor() {
         TransactionEntity actualTransactionEntity = new TransactionEntity();
         actualTransactionEntity.setAmount(BigDecimal.valueOf(1L));
         UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
+        userEntity.setEmail("example@unejemplo.es");
         userEntity.setName("Name");
         userEntity.setPhoneNumber("6625550144");
         userEntity.setUserId(1L);
@@ -46,7 +27,7 @@ class TransactionEntityTest {
         destinationWallet.setWalletId(1L);
         actualTransactionEntity.setDestinationWallet(destinationWallet);
         UserEntity userEntity2 = new UserEntity();
-        userEntity2.setEmail("jane.doe@example.org");
+        userEntity2.setEmail("example@unejemplo.es");
         userEntity2.setName("Name");
         userEntity2.setPhoneNumber("6625550144");
         userEntity2.setUserId(1L);

@@ -1,14 +1,24 @@
 package com.iobuilders.mylittebank.application.dto.mapper;
 
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateDeposit;
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateUser;
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.generateWallet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.iobuilders.mylittebank.application.dto.request.MakeDepositRequest;
 import com.iobuilders.mylittebank.application.dto.request.RegisterUserRequest;
+import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 
+import com.iobuilders.mylittebank.domain.model.Wallet;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -27,25 +37,40 @@ class RegisterUserRequestMapperTest {
     @Autowired
     private RegisterUserRequestMapper registerUserRequestMapper;
 
-    /**
-     * Method under test: {@link RegisterUserRequestMapper#toUser(RegisterUserRequest)}
-     */
-    @Test
-    void testToUser() {
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
-        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<User>>any())).thenReturn(user);
+    private RegisterUserRequest registerUserRequest;
+    @BeforeEach
+    void init() {
+        User user = generateUser();
 
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
-        registerUserRequest.setEmail("jane.doe@example.org");
-        registerUserRequest.setName("Name");
-        registerUserRequest.setPhoneNumber("6625550144");
-        assertSame(user, registerUserRequestMapper.toUser(registerUserRequest));
-        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<User>>any());
+        registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setEmail(user.getEmail());
+        registerUserRequest.setName(user.getName());
+        registerUserRequest.setPhoneNumber(user.getPhoneNumber());
+
+        when(modelMapper.map(registerUserRequest, User.class)).thenReturn(user);
+        when(modelMapper.map(null,User.class)).thenThrow(NullPointerException.class);
+
     }
+
+    @Test
+    void fromRegisterUserRequestToUser_result_ok() {
+        User userResult = registerUserRequestMapper.toUser(registerUserRequest);
+        assertEquals(registerUserRequest.getEmail(), userResult.getEmail());
+        assertEquals(registerUserRequest.getPhoneNumber(), userResult.getPhoneNumber());
+        assertEquals(registerUserRequest.getName(), userResult.getName());
+    }
+
+    @Test
+    void fromRegisterUserRequestToUser_verify_map_call() {
+        registerUserRequestMapper.toUser(registerUserRequest);
+        verify(modelMapper).map(registerUserRequest, User.class);
+    }
+
+    @Test
+    void fromRegisterUserRequestToUser_result_ko() {
+        assertThrows(NullPointerException.class, () -> registerUserRequestMapper.toUser(null));
+    }
+
+
 }
 

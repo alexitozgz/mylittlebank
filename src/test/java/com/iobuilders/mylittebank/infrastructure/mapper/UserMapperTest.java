@@ -1,13 +1,12 @@
 package com.iobuilders.mylittebank.infrastructure.mapper;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.infrastructure.persistence.entity.UserEntity;
-
-import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,6 +17,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import static com.iobuilders.mylittebank.util.MyLittleBankTestUtils.*;
+
 @ContextConfiguration(classes = {UserMapper.class})
 @ExtendWith(SpringExtension.class)
 class UserMapperTest {
@@ -27,50 +28,60 @@ class UserMapperTest {
     @Autowired
     private UserMapper userMapper;
 
-    /**
-     * Method under test: {@link UserMapper#toUser(UserEntity)}
-     */
     @Test
-    void testToUser() {
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
+    void userEntityToUser_ok() {
+        User user = generateUser();
         when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<User>>any())).thenReturn(user);
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
-        userEntity.setName("Name");
-        userEntity.setPhoneNumber("6625550144");
-        userEntity.setUserId(1L);
-        userEntity.setWallet(new HashSet<>());
-        assertSame(user, userMapper.toUser(userEntity));
-        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<User>>any());
+        UserEntity userEntity = generateUserEntity(user);
+
+        User userResult = userMapper.toUser(userEntity);
+
+        assertSame(user, userResult);
+        assertEquals(user.getName(), userResult.getName());
+        assertEquals(user.getUserId(), userResult.getUserId());
+        assertEquals(user.getEmail(), userResult.getEmail());
     }
+    @Test
+    void userEntityToUser_verify_mapper_calls() {
+        User user = generateUser();
+        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<User>>any())).thenReturn(user);
+
+        UserEntity userEntity = generateUserEntity(user);
+
+        userMapper.toUser(userEntity);
+
+        verify(modelMapper).map(userEntity, User.class);
+    }
+
 
     /**
      * Method under test: {@link UserMapper#toUserEntity(User)}
      */
     @Test
-    void testToUserEntity() {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail("jane.doe@example.org");
-        userEntity.setName("Name");
-        userEntity.setPhoneNumber("6625550144");
-        userEntity.setUserId(1L);
-        userEntity.setWallet(new HashSet<>());
-        when(modelMapper.map(Mockito.<Object>any(), Mockito.<Class<UserEntity>>any())).thenReturn(userEntity);
+    void userToUserEntity_ok() {
+        User user = generateUser();
+        UserEntity userEntity = generateUserEntity(user);
+        when(modelMapper.map(user, UserEntity.class)).thenReturn(userEntity);
 
-        User user = new User();
-        user.setEmail("jane.doe@example.org");
-        user.setName("Name");
-        user.setPhoneNumber("6625550144");
-        user.setUserId(1L);
-        user.setWallet(new HashSet<>());
-        assertSame(userEntity, userMapper.toUserEntity(user));
-        verify(modelMapper).map(Mockito.<Object>any(), Mockito.<Class<UserEntity>>any());
+        UserEntity userEntityResult = userMapper.toUserEntity(user);
+        assertSame(userEntity, userEntityResult);
+
+        assertEquals(user.getName(), userEntityResult.getName());
+        assertEquals(user.getUserId(), userEntityResult.getUserId());
+        assertEquals(user.getEmail(), userEntityResult.getEmail());
+
     }
+
+    @Test
+    void userToUserEntity_verify_mapper_calls() {
+        User user = generateUser();
+        UserEntity userEntity = generateUserEntity(user);
+        when(modelMapper.map(user, UserEntity.class)).thenReturn(userEntity);
+
+        assertSame(userEntity, userMapper.toUserEntity(user));
+        verify(modelMapper).map(user, UserEntity.class);
+    }
+
 }
 

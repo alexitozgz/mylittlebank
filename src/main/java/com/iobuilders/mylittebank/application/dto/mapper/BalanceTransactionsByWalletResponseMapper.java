@@ -3,13 +3,8 @@ package com.iobuilders.mylittebank.application.dto.mapper;
 import com.iobuilders.mylittebank.application.dto.response.BalanceTransactionsByWalletResponse;
 import com.iobuilders.mylittebank.application.dto.response.TransactionResponse;
 import com.iobuilders.mylittebank.domain.model.Wallet;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class BalanceTransactionsByWalletResponseMapper {
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     public BalanceTransactionsByWalletResponse toTransactionsBalanceByWalletResponseUser (Wallet wallet){
         BalanceTransactionsByWalletResponse balanceTransactionsByWalletResponse = new BalanceTransactionsByWalletResponse();
