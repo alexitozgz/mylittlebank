@@ -3,6 +3,7 @@ package com.iobuilders.mylittebank.infrastructure.config;
 import com.iobuilders.mylittebank.application.dto.mapper.BalanceTransactionsByWalletResponseMapper;
 import com.iobuilders.mylittebank.application.dto.mapper.MakeDepositRequestMapper;
 import com.iobuilders.mylittebank.application.dto.mapper.MakeTransferRequestMapper;
+import com.iobuilders.mylittebank.application.dto.mapper.RegisterUserRequestMapper;
 import com.iobuilders.mylittebank.domain.ports.outbound.CreateWalletPort;
 import com.iobuilders.mylittebank.domain.ports.outbound.MakeDepositPort;
 import com.iobuilders.mylittebank.domain.ports.outbound.MakeTransferPort;
@@ -66,6 +67,11 @@ public class BeanConfiguration {
     @Bean
     public MakeDepositRequestMapper makeDepositRequestMapper(){
         return new MakeDepositRequestMapper();
+    }
+
+    @Bean
+    public RegisterUserRequestMapper registerUserRequestMapper(){
+        return new RegisterUserRequestMapper();
     }
 
 

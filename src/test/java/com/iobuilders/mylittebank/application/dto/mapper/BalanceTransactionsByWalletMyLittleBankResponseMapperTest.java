@@ -34,7 +34,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {BalanceTransactionsByWalletResponseMapper.class})
 @ExtendWith(SpringExtension.class)
-class BalanceTransactionsByWalletResponseMapperTest {
+class BalanceTransactionsByWalletMyLittleBankResponseMapperTest {
     @Autowired
     private BalanceTransactionsByWalletResponseMapper balanceTransactionsByWalletResponseMapper;
 

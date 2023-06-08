@@ -1,6 +1,7 @@
 package com.iobuilders.mylittebank.domain.service;
 
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.domain.ports.inbound.ObtainBalanceTransactionsByWalletUseCase;
@@ -22,7 +23,7 @@ public class ObtainBalanceTransactionsByWalletUseCaseService implements ObtainBa
 
 
     @Override
-    public Wallet obtainBalanceTransactionsByWallet(Long walletId) throws UserNotFoundException {
+    public Wallet obtainBalanceTransactionsByWallet(Long walletId) throws WalletNotFoundException {
         Wallet wallet = obtainWalletPort.obtainWalletPort(walletId);
 
         List<Transaction> transactionList = obtainTransactionsByWalletPort.obtainTransactionsByWalletPort(wallet);

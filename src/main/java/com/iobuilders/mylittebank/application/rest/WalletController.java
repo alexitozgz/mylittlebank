@@ -4,6 +4,9 @@ import com.iobuilders.mylittebank.application.dto.mapper.BalanceTransactionsByWa
 import com.iobuilders.mylittebank.application.dto.request.CreateWalletRequest;
 import com.iobuilders.mylittebank.application.dto.request.ObtainBalanceTransactionsByWalletRequest;
 import com.iobuilders.mylittebank.application.dto.response.BalanceTransactionsByWalletResponse;
+import com.iobuilders.mylittebank.application.dto.response.MyLittleBankResponse;
+import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.domain.ports.inbound.CreateWalletUseCase;
 import com.iobuilders.mylittebank.domain.ports.inbound.ObtainBalanceTransactionsByWalletUseCase;
@@ -14,6 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping("/wallets")
@@ -29,23 +35,15 @@ public class WalletController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createWallet(@RequestBody CreateWalletRequest createWalletRequest) {
-        try {
-            createWalletUseCase.createWallet(createWalletRequest.getUserId());
-            return ResponseEntity.ok("Wallet creada correctamente");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al crear Wallet "+e.getMessage());
-        }
+    public ResponseEntity<Object> createWallet(@Valid @NotNull @RequestBody CreateWalletRequest createWalletRequest) throws UserNotFoundException {
+        createWalletUseCase.createWallet(createWalletRequest.getUserId());
+        return ResponseEntity.ok(new MyLittleBankResponse(HttpStatus.CREATED, "Wallet created"));
     }
 
     @GetMapping
-    public ResponseEntity<BalanceTransactionsByWalletResponse> getWallet(@RequestBody ObtainBalanceTransactionsByWalletRequest obtainBalanceTransactionsByWalletRequest) {
-        try {
-            Wallet wallet = obtainBalanceTransactionsByWalletUseCase.obtainBalanceTransactionsByWallet(obtainBalanceTransactionsByWalletRequest.getWalletId());
-            return ResponseEntity.ok(balanceTransactionsByWalletResponseMapper.toTransactionsBalanceByWalletResponseUser(wallet));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    public ResponseEntity<Object> getWallet(@Valid @NotNull @RequestBody ObtainBalanceTransactionsByWalletRequest obtainBalanceTransactionsByWalletRequest) throws WalletNotFoundException {
+        Wallet wallet = obtainBalanceTransactionsByWalletUseCase.obtainBalanceTransactionsByWallet(obtainBalanceTransactionsByWalletRequest.getWalletId());
+        return ResponseEntity.ok(balanceTransactionsByWalletResponseMapper.toTransactionsBalanceByWalletResponseUser(wallet));
     }
 
 }

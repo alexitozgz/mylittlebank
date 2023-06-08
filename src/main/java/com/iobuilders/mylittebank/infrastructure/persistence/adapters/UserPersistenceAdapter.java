@@ -27,7 +27,7 @@ public class UserPersistenceAdapter implements RegisterUserPort, ObtainUserPort 
 
     @Override
     public void obtainUser(Long userId) throws UserNotFoundException {
-        userRepository.findById(userId).orElseThrow(() ->new UserNotFoundException("User not found"));
+        userRepository.findById(userId).orElseThrow(() ->new UserNotFoundException(userId));
     }
 
 //    @Override

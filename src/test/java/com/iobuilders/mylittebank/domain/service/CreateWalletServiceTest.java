@@ -63,8 +63,8 @@ class CreateWalletServiceTest {
     @Test
     void testCreateWallet2() throws UserNotFoundException {
         doNothing().when(createWalletPort).createWallet(Mockito.<Long>any());
-        doThrow(new UserNotFoundException("An error occurred")).when(obtainUserPort).obtainUser(Mockito.<Long>any());
-        assertThrows(UserNotFoundException.class, () -> createWalletService.createWallet(1L));
+        doThrow(new UserNotFoundException(2L)).when(obtainUserPort).obtainUser(2L);
+        assertThrows(UserNotFoundException.class, () -> createWalletService.createWallet(2L));
         verify(obtainUserPort).obtainUser(Mockito.<Long>any());
     }
 }

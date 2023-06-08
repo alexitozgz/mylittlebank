@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.infrastructure.mapper.WalletMapper;
@@ -79,9 +80,9 @@ class WalletPersistenceAdapterTest {
      * Method under test: {@link WalletPersistenceAdapter#obtainWalletPort(Long)}
      */
     @Test
-    void testObtainWalletPort() throws UserNotFoundException {
-        assertThrows(UserNotFoundException.class, () -> walletPersistenceAdapter.obtainWalletPort(1L));
-        assertThrows(UserNotFoundException.class, () -> walletPersistenceAdapter.obtainWalletPort(2L));
+    void testObtainWalletPort() throws WalletNotFoundException {
+        assertThrows(WalletNotFoundException.class, () -> walletPersistenceAdapter.obtainWalletPort(1L));
+        assertThrows(WalletNotFoundException.class, () -> walletPersistenceAdapter.obtainWalletPort(2L));
     }
 
     /**

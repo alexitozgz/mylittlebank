@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
@@ -67,7 +68,7 @@ class MakeDepositServiceTest {
      * Method under test: {@link MakeDepositService#makeDeposit(Transaction)}
      */
     @Test
-    void testMakeDeposit() throws UserNotFoundException {
+    void testMakeDeposit() throws WalletNotFoundException {
         doNothing().when(makeDepositPort).createDeposit(Mockito.<Transaction>any());
 
         User user = new User();
@@ -130,7 +131,7 @@ class MakeDepositServiceTest {
      */
     @Test
     @Disabled("TODO: Complete this test")
-    void testMakeDeposit2() throws UserNotFoundException {
+    void testMakeDeposit2() throws WalletNotFoundException {
         // TODO: Complete this test.
         //   Reason: R013 No inputs found that don't throw a trivial exception.
         //   Diffblue Cover tried to run the arrange/act section, but the method under

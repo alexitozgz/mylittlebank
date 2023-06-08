@@ -1,6 +1,7 @@
 package com.iobuilders.mylittebank.domain.service;
 
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.domain.model.enumerations.TransactionType;
@@ -23,7 +24,7 @@ public class MakeDepositService implements MakeDepositUseCase {
     }
 
     @Override
-    public void makeDeposit(Transaction transaction) throws UserNotFoundException {
+    public void makeDeposit(Transaction transaction) throws WalletNotFoundException {
         Wallet wallet = obtainWalletPort.obtainWalletPort(transaction.getDestinationWallet().getWalletId());
         wallet.setBalance(wallet.getBalance().add(transaction.getAmount()));
         transaction.setTransactionType(TransactionType.DEPOSIT.name());

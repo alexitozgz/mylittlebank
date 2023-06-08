@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 
 import com.iobuilders.mylittebank.domain.exceptions.NotEnoughMoneyException;
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
@@ -476,7 +477,7 @@ class BeanConfigurationTest {
      * Method under test: {@link BeanConfiguration#makeDepositService(MakeDepositPort, ObtainWalletPort, UpdateWalletPort)}
      */
     @Test
-    void testMakeDepositService() throws UserNotFoundException {
+    void testMakeDepositService() throws WalletNotFoundException {
         //   Diffblue Cover was unable to write a Spring test,
         //   so wrote a non-Spring test instead.
         //   Reason: R002 Missing observers.
@@ -548,7 +549,7 @@ class BeanConfigurationTest {
      * Method under test: {@link BeanConfiguration#makeTransferService(MakeTransferPort, ObtainWalletPort, UpdateWalletPort)}
      */
     @Test
-    void testMakeTransferService() throws NotEnoughMoneyException, UserNotFoundException {
+    void testMakeTransferService() throws NotEnoughMoneyException, WalletNotFoundException {
         //   Diffblue Cover was unable to write a Spring test,
         //   so wrote a non-Spring test instead.
         //   Reason: R002 Missing observers.
@@ -609,7 +610,11 @@ class BeanConfigurationTest {
         transaction.setTransactionDateTime(LocalDate.of(1970, 1, 1).atStartOfDay());
         transaction.setTransactionId(1L);
         transaction.setTransactionType("Transaction Type");
-        actualMakeTransferServiceResult.makeTransfer(transaction);
+        try {
+            actualMakeTransferServiceResult.makeTransfer(transaction);
+        } catch (WalletNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         verify(makeTransferPort).createTransfer(Mockito.<Transaction>any());
         verify(obtainWalletPort, atLeast(1)).obtainWalletPort(Mockito.<Long>any());
         verify(updateWalletPort, atLeast(1)).updateWallet(Mockito.<Wallet>any());
@@ -620,7 +625,7 @@ class BeanConfigurationTest {
      * Method under test: {@link BeanConfiguration#obtainBalanceTransactionsByWalletUseCaseService(ObtainTransactionsByWalletPort, ObtainWalletPort)}
      */
     @Test
-    void testObtainBalanceTransactionsByWalletUseCaseService() throws UserNotFoundException {
+    void testObtainBalanceTransactionsByWalletUseCaseService() throws WalletNotFoundException {
         //   Diffblue Cover was unable to write a Spring test,
         //   so wrote a non-Spring test instead.
         //   Reason: R002 Missing observers.

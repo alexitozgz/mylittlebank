@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
@@ -59,7 +60,7 @@ class ObtainBalanceTransactionsByWalletUseCaseServiceTest {
      * Method under test: {@link ObtainBalanceTransactionsByWalletUseCaseService#obtainBalanceTransactionsByWallet(Long)}
      */
     @Test
-    void testObtainBalanceTransactionsByWallet() throws UserNotFoundException {
+    void testObtainBalanceTransactionsByWallet() throws WalletNotFoundException {
         when(obtainTransactionsByWalletPort.obtainTransactionsByWalletPort(Mockito.<Wallet>any()))
                 .thenReturn(new ArrayList<>());
 
@@ -90,13 +91,13 @@ class ObtainBalanceTransactionsByWalletUseCaseServiceTest {
      * Method under test: {@link ObtainBalanceTransactionsByWalletUseCaseService#obtainBalanceTransactionsByWallet(Long)}
      */
     @Test
-    void testObtainBalanceTransactionsByWallet2() throws UserNotFoundException {
-        when(obtainTransactionsByWalletPort.obtainTransactionsByWalletPort(Mockito.<Wallet>any()))
+    void testObtainBalanceTransactionsByWallet2() throws WalletNotFoundException {
+        when(obtainTransactionsByWalletPort.obtainTransactionsByWalletPort(Mockito.any()))
                 .thenReturn(new ArrayList<>());
-        when(obtainWalletPort.obtainWalletPort(Mockito.<Long>any()))
-                .thenThrow(new UserNotFoundException("An error occurred"));
-        assertThrows(UserNotFoundException.class,
-                () -> obtainBalanceTransactionsByWalletUseCaseService.obtainBalanceTransactionsByWallet(1L));
+        when(obtainWalletPort.obtainWalletPort(2L))
+                .thenThrow(new WalletNotFoundException(2L));
+        assertThrows(WalletNotFoundException.class,
+                () -> obtainBalanceTransactionsByWalletUseCaseService.obtainBalanceTransactionsByWallet(2L));
         verify(obtainWalletPort).obtainWalletPort(Mockito.<Long>any());
     }
 }

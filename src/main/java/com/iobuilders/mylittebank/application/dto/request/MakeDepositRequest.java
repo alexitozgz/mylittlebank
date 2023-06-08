@@ -1,10 +1,13 @@
 package com.iobuilders.mylittebank.application.dto.request;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 public class MakeDepositRequest {
 
+    @NotNull
     private long destinationWalletId;
+    @NotNull
     private BigDecimal amount;
 
     public long getDestinationWalletId() {

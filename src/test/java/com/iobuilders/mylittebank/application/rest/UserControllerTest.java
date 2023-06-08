@@ -1,6 +1,7 @@
 package com.iobuilders.mylittebank.application.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iobuilders.mylittebank.application.dto.mapper.RegisterUserRequestMapper;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.ports.inbound.RegisterUserUseCase;
 
@@ -22,11 +23,18 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @ContextConfiguration(classes = {UserController.class})
 @ExtendWith(SpringExtension.class)
 class UserControllerTest {
+
     @MockBean
     private RegisterUserUseCase registerUserUseCase;
 
+    @MockBean
+    private RegisterUserRequestMapper registerUserRequestMapper;
+
+
     @Autowired
     private UserController userController;
+
+
 
     /**
      * Method under test: {@link UserController#registerUser(User)}

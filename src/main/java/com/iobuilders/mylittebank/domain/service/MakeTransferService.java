@@ -1,7 +1,7 @@
 package com.iobuilders.mylittebank.domain.service;
 
 import com.iobuilders.mylittebank.domain.exceptions.NotEnoughMoneyException;
-import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.domain.model.enumerations.TransactionType;
@@ -26,7 +26,7 @@ public class MakeTransferService implements MakeTransferUseCase {
     }
 
     @Override
-    public void makeTransfer(Transaction transaction) throws UserNotFoundException, NotEnoughMoneyException {
+    public void makeTransfer(Transaction transaction) throws NotEnoughMoneyException, WalletNotFoundException {
         Wallet wallet = obtainWalletPort.obtainWalletPort(transaction.getDestinationWallet().getWalletId());
         Wallet originWallet = obtainWalletPort.obtainWalletPort(transaction.getOriginWallet().getWalletId());
         hasOriginBalanceEnough(originWallet.getBalance(), transaction.getAmount());
@@ -39,8 +39,8 @@ public class MakeTransferService implements MakeTransferUseCase {
     }
 
     private void hasOriginBalanceEnough(BigDecimal balance, BigDecimal amount) throws NotEnoughMoneyException {
-        if (amount.compareTo(balance) > 1){
-            throw new NotEnoughMoneyException("Destination account has not money enough to make a transfer with this amount");
+        if (amount.compareTo(balance) > 0){
+            throw new NotEnoughMoneyException(balance, amount);
         }
     }
 }

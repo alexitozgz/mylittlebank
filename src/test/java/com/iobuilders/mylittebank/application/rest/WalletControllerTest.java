@@ -1,11 +1,16 @@
 package com.iobuilders.mylittebank.application.rest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.iobuilders.mylittebank.application.dto.mapper.BalanceTransactionsByWalletResponseMapper;
 import com.iobuilders.mylittebank.application.dto.request.CreateWalletRequest;
 import com.iobuilders.mylittebank.application.dto.request.ObtainBalanceTransactionsByWalletRequest;
+import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
@@ -31,6 +36,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.util.NestedServletException;
 
 @ContextConfiguration(classes = {WalletController.class, BalanceTransactionsByWalletResponseMapper.class,
         ModelMapper.class})
@@ -297,7 +303,7 @@ class WalletControllerTest {
         originWallet.setWalletId(1L);
 
         Transaction transaction = new Transaction();
-        transaction.setAmount(null);
+        transaction.setAmount(BigDecimal.ONE);
         transaction.setDestinationWallet(destinationWallet);
         transaction.setOriginWallet(originWallet);
         transaction.setTransactionDateTime(LocalDate.of(1970, 1, 1).atStartOfDay());
@@ -319,19 +325,30 @@ class WalletControllerTest {
         wallet.setTransactionList(transactionList);
         wallet.setUser(user3);
         wallet.setWalletId(1L);
-        when(obtainBalanceTransactionsByWalletUseCase.obtainBalanceTransactionsByWallet(Mockito.<Long>any()))
-                .thenReturn(wallet);
 
-        CreateWalletRequest createWalletRequest = new CreateWalletRequest();
-        createWalletRequest.setUserId(1L);
-        String content = (new ObjectMapper()).writeValueAsString(createWalletRequest);
+        ObtainBalanceTransactionsByWalletRequest obtainBalanceTransactionsByWalletRequest = new ObtainBalanceTransactionsByWalletRequest();
+        obtainBalanceTransactionsByWalletRequest.setWalletId(1L);
+
+        doThrow(new WalletNotFoundException(1L)).when(obtainBalanceTransactionsByWalletUseCase).obtainBalanceTransactionsByWallet(1L);
+
+        String content = (new ObjectMapper()).writeValueAsString(obtainBalanceTransactionsByWalletRequest);
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.get("/wallets")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content);
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(walletController)
+
+        assertThrows(NestedServletException.class, () -> MockMvcBuilders.standaloneSetup(walletController)
+                .build()
+                .perform(requestBuilder));
+
+        try{
+            MockMvcBuilders.standaloneSetup(walletController)
                 .build()
                 .perform(requestBuilder);
-        actualPerformResult.andExpect(MockMvcResultMatchers.status().is(500));
+        } catch (NestedServletException e){
+            assertEquals(WalletNotFoundException.class,e.getCause().getClass());
+        }
+
+
     }
 
     /**
@@ -583,7 +600,7 @@ class WalletControllerTest {
         originWallet.setWalletId(1L);
 
         Transaction transaction = new Transaction();
-        transaction.setAmount(null);
+        transaction.setAmount(BigDecimal.ONE);
         transaction.setDestinationWallet(destinationWallet);
         transaction.setOriginWallet(originWallet);
         transaction.setTransactionDateTime(LocalDate.of(1970, 1, 1).atStartOfDay());
@@ -605,18 +622,29 @@ class WalletControllerTest {
         wallet.setTransactionList(transactionList);
         wallet.setUser(user3);
         wallet.setWalletId(1L);
-        when(obtainBalanceTransactionsByWalletUseCase.obtainBalanceTransactionsByWallet(Mockito.<Long>any()))
-                .thenReturn(wallet);
+
         MockHttpServletRequestBuilder contentTypeResult = MockMvcRequestBuilders.get("/wallets")
                 .contentType(MediaType.APPLICATION_JSON);
 
+        doThrow(new WalletNotFoundException(1L)).when(obtainBalanceTransactionsByWalletUseCase).obtainBalanceTransactionsByWallet(1L);
+
         ObjectMapper objectMapper = new ObjectMapper();
+        ObtainBalanceTransactionsByWalletRequest obtainBalanceTransactionsByWalletRequest = new ObtainBalanceTransactionsByWalletRequest();
+        obtainBalanceTransactionsByWalletRequest.setWalletId(1L);
         MockHttpServletRequestBuilder requestBuilder = contentTypeResult
-                .content(objectMapper.writeValueAsString(new ObtainBalanceTransactionsByWalletRequest()));
-        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(walletController)
+                .content(objectMapper.writeValueAsString(obtainBalanceTransactionsByWalletRequest));
+
+        assertThrows(NestedServletException.class, () -> MockMvcBuilders.standaloneSetup(walletController)
                 .build()
-                .perform(requestBuilder);
-        actualPerformResult.andExpect(MockMvcResultMatchers.status().is(500));
+                .perform(requestBuilder));
+
+        try{
+            MockMvcBuilders.standaloneSetup(walletController)
+                    .build()
+                    .perform(requestBuilder);
+        } catch (NestedServletException e){
+            assertEquals(WalletNotFoundException.class,e.getCause().getClass());
+        }
     }
 }
 

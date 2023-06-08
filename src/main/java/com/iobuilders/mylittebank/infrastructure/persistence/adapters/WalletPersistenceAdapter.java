@@ -1,7 +1,6 @@
 package com.iobuilders.mylittebank.infrastructure.persistence.adapters;
 
-import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
-import com.iobuilders.mylittebank.domain.model.User;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Wallet;
 import com.iobuilders.mylittebank.domain.ports.outbound.CreateWalletPort;
 import com.iobuilders.mylittebank.domain.ports.outbound.ObtainWalletPort;
@@ -10,7 +9,6 @@ import com.iobuilders.mylittebank.infrastructure.mapper.WalletMapper;
 import com.iobuilders.mylittebank.infrastructure.persistence.entity.UserEntity;
 import com.iobuilders.mylittebank.infrastructure.persistence.entity.WalletEntity;
 import com.iobuilders.mylittebank.infrastructure.persistence.repository.WalletRepository;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
@@ -37,8 +35,8 @@ public class WalletPersistenceAdapter implements CreateWalletPort, ObtainWalletP
     }
 
     @Override
-    public Wallet obtainWalletPort(Long walletId) throws UserNotFoundException {
-        WalletEntity walletEntity = walletRepository.findById(walletId).orElseThrow(()->new UserNotFoundException("User not found"));
+    public Wallet obtainWalletPort(Long walletId) throws WalletNotFoundException {
+        WalletEntity walletEntity = walletRepository.findById(walletId).orElseThrow(() -> new WalletNotFoundException(walletId));
         return walletMapper.toWallet(walletEntity);
     }
 

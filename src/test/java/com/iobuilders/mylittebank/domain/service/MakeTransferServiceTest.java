@@ -10,9 +10,11 @@ import static org.mockito.Mockito.when;
 
 import com.iobuilders.mylittebank.domain.exceptions.NotEnoughMoneyException;
 import com.iobuilders.mylittebank.domain.exceptions.UserNotFoundException;
+import com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException;
 import com.iobuilders.mylittebank.domain.model.Transaction;
 import com.iobuilders.mylittebank.domain.model.User;
 import com.iobuilders.mylittebank.domain.model.Wallet;
+import com.iobuilders.mylittebank.domain.ports.inbound.MakeTransferUseCase;
 import com.iobuilders.mylittebank.domain.ports.outbound.MakeTransferPort;
 import com.iobuilders.mylittebank.domain.ports.outbound.ObtainWalletPort;
 import com.iobuilders.mylittebank.domain.ports.outbound.UpdateWalletPort;
@@ -66,10 +68,10 @@ class MakeTransferServiceTest {
     }
 
     /**
-     * Method under test: {@link MakeTransferService#makeTransfer(Transaction)}
+     * Method under test: {@link MakeTransferUseCase#makeTransfer(Transaction)}
      */
     @Test
-    void testMakeTransfer() throws NotEnoughMoneyException, UserNotFoundException {
+    void testMakeTransfer() throws NotEnoughMoneyException, WalletNotFoundException {
         doNothing().when(makeTransferPort).createTransfer(Mockito.<Transaction>any());
 
         User user = new User();
@@ -120,7 +122,11 @@ class MakeTransferServiceTest {
         transaction.setTransactionDateTime(LocalDate.of(1970, 1, 1).atStartOfDay());
         transaction.setTransactionId(1L);
         transaction.setTransactionType("Transaction Type");
-        makeTransferService.makeTransfer(transaction);
+        try {
+            makeTransferService.makeTransfer(transaction);
+        } catch (com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         verify(makeTransferPort).createTransfer(Mockito.<Transaction>any());
         verify(obtainWalletPort, atLeast(1)).obtainWalletPort(Mockito.<Long>any());
         verify(updateWalletPort, atLeast(1)).updateWallet(Mockito.<Wallet>any());
@@ -128,11 +134,11 @@ class MakeTransferServiceTest {
     }
 
     /**
-     * Method under test: {@link MakeTransferService#makeTransfer(Transaction)}
+     * Method under test: {@link MakeTransferUseCase#makeTransfer(Transaction)}
      */
     @Test
     @Disabled("TODO: Complete this test")
-    void testMakeTransfer2() throws NotEnoughMoneyException, UserNotFoundException {
+    void testMakeTransfer2() throws NotEnoughMoneyException, WalletNotFoundException {
         // TODO: Complete this test.
         //   Reason: R013 No inputs found that don't throw a trivial exception.
         //   Diffblue Cover tried to run the arrange/act section, but the method under
@@ -197,7 +203,11 @@ class MakeTransferServiceTest {
         transaction.setTransactionDateTime(LocalDate.of(1970, 1, 1).atStartOfDay());
         transaction.setTransactionId(1L);
         transaction.setTransactionType("Transaction Type");
-        makeTransferService.makeTransfer(transaction);
+        try {
+            makeTransferService.makeTransfer(transaction);
+        } catch (com.iobuilders.mylittebank.domain.exceptions.WalletNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 
