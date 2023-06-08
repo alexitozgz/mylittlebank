@@ -1,18 +1,19 @@
 {
 	"info": {
-		"_postman_id": "42502435-9fc2-4c0a-ac98-55655e4edf8c",
+		"_postman_id": "0644048f-c385-4023-87b1-66a369ae20f9",
 		"name": "mylittlebankapplication",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27875866"
 	},
 	"item": [
 		{
-			"name": "CreateUser",
+			"name": "CreateUserExceptionMissingFields",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"name\": \"ole\",\n  \"phoneNumber\": \"61111111\",\n  \"email\": \"ole@conole.ole\"\n}",
+					"raw": "{\n  \"phoneNumber\": \"61111111\",\n  \"email\": \"ole@conole.ole\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -41,6 +42,62 @@
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"userId\": \"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/wallets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateWalletUserNotFound",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"99999999\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/wallets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"wallets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateWalletMissingFields",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fakeField\": \"99999999\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -91,13 +148,100 @@
 			"response": []
 		},
 		{
+			"name": "MakeDepositWalletNotFound",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"destinationWalletId\": \"333333333\",\n  \"amount\": \"3000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/transactions/deposit",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transactions",
+						"deposit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "MakeTransfer",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \n  \"originWalletId\": \"3\",\n  \"destinationWalletId\": \"4\",\n  \"amount\": \"1000\"\n}",
+					"raw": "{\n  \n  \"originWalletId\": \"3\",\n  \"destinationWalletId\": \"2\",\n  \"amount\": \"1000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/transactions/transfer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transactions",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MakeTransferWalletNotFound",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \n  \"originWalletId\": \"3\",\n  \"destinationWalletId\": \"200000000\",\n  \"amount\": \"1000\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/transactions/transfer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"transactions",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "MakeTransferNotEnoughMoney",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \n  \"originWalletId\": \"3\",\n  \"destinationWalletId\": \"2\",\n  \"amount\": \"1000000000\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -145,6 +289,34 @@
 					"port": "8080",
 					"path": [
 						"wallets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"UnUsuario\",\n  \"phoneNumber\": \"61111111\",\n  \"email\": \"usuario@usuarios.usu\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
 					]
 				}
 			},
